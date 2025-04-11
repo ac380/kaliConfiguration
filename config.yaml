@@ -200,16 +200,16 @@
           
           ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
           
-          ZSH_THEME="jonathan"
+          ZSH_THEME="bira"
 
           randomtheme() {
-          ZSH_THEMES=(bira dst clean sorin af-magic)
-          local NEW_THEME="${ZSH_THEMES[RANDOM % ${#ZSH_THEMES[@]}]}"
-          echo "Switching to random theme: $NEW_THEME"
-          sed -i'' -E "s/^ZSH_THEME=.*/ZSH_THEME=\"$NEW_THEME\"/" ~/.zshrc
-          exec zsh
+            ZSH_THEMES=(bira dst clean sorin af-magic)
+            local NEW_THEME="${ZSH_THEMES[RANDOM % 5]}"
+            echo "Switching to random theme: $NEW_THEME"
+            sed -i'' -E "s/^ZSH_THEME=.*/ZSH_THEME=\"$NEW_THEME\"/" ~/.zshrc
+            source ~/.zshrc
           }
-          
+              
           plugins=(
             tmux
             zsh-autosuggestions

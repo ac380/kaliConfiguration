@@ -11,8 +11,6 @@
     docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
     sublime_repo: "https://download.sublimetext.com/apt/stable/"
     image_dir: "/opt/wallpapers/"
-    github_repo: "https://github.com/ac380/wallpapers.git"
-    github_repo_themes: "https://github.com/ac380/themes.git"
 
   tasks:
     - name: Update apt cache
@@ -603,14 +601,14 @@
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: '0755'
-
-    - name: Clone or update the GitHub repo with new wallpapers
-      git:
-        repo: "{{ github_repo }}"
-        dest: "{{ image_dir }}"
-        version: "HEAD"
-        force: yes
-
+        
+    - name: Copy new wallpapers in the new wallpaper folder
+      copy:
+        src: "/tmp/kaliConfiguration/wallpapers"
+        dest: "/opt/wallpapers"
+        mode: '0644'
+      when: true
+      
     - name: Grant write permissions to the user for the lightdm-gtk-greeter.conf
       file:
         path: /etc/lightdm/
@@ -636,24 +634,10 @@
         owner: "{{ user }}"
         group: "{{ user }}"
 
-    - name: Clone or update the GitHub repo with the themes
-      git:
-        repo: "{{ github_repo_themes }}"
-        dest: "/tmp/themes"
-        version: "HEAD"
-        force: yes
-
-    - name: Extract Whisker GTK CSS config to /etc/gtk-3.0
-      become: true
-      unarchive:
-        src: "/tmp/themes/whisker-menu.gtk.css.dark.zip"
-        dest: "/etc/gtk-3.0"
-        remote_src: yes
-
     - name: Extract Panel Config
       become: true
       unarchive:
-        src: "/tmp/themes/panelconfig.tar.bz2"
+        src: "/tmp/kaliConfiguration/files/panelconfig.tar.bz2"
         dest: "/tmp/"
         remote_src: yes
 

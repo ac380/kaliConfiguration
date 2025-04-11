@@ -5,8 +5,8 @@ Contains all files and automations for the kali configuration
 Install Ansible  
 ```sudo apt install ansible -y```
 
-Clone the config.yaml  
-```git clone https://raw.githubusercontent.com/ac380/kaliConfiguration/refs/heads/main/config.yaml```
+Clone the repository
+```git clone https://github.com/ac380/kaliConfiguration.git```
 
 Run the config.yaml  
 ```sudo ansible-playbook config.yaml```

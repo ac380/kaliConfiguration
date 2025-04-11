@@ -605,7 +605,7 @@
     - name: Copy new wallpapers in the new wallpaper folder
       copy:
         src: "/tmp/kaliConfiguration/wallpapers"
-        dest: "/opt/wallpapers"
+        dest: "{{ image_dir }}"
         mode: '0644'
       when: true
       

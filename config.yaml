@@ -419,10 +419,10 @@
           alias pws='python3 -m http.server 9000'
           
           # Set up a tunneling interface using ligolo
-          alias lgu='sudo ip tuntap add user kali mode tun ligolo && sudo ip link set ligolo up'
+          alias lgu='sudo ip tuntap add user {{ user }} mode tun ligolo && sudo ip link set ligolo up'
           
           # Add local bin directory to the system PATH
-          export PATH=$PATH:/home/kali/.local/bin
+          export PATH=$PATH:/home/{{ user }}/.local/bin
           
           # Launch Bloodhound
           alias bh='docker compose -f ~/.dotfiles/bloodhound/docker-compose.yml up && echo "BloodHound starting"'          

@@ -628,7 +628,7 @@
           xfconf-query -c xfce4-desktop -p $(xfconf-query -c xfce4-desktop -l | grep "workspace0/last-image") -s $wallpaper
           
           # Set the lock screen wallpaper by modifying lightdm-gtk-greeter.conf
-          sed -i "s|^background=.*|background=$wallpaper|" /etc/lightdm/lightdm-gtk-greeter.conf
+          sed -i "s|background = .*|background = $wallpaper|" /etc/lightdm/lightdm-gtk-greeter.conf
           
         mode: '0755'
         owner: "{{ user }}"

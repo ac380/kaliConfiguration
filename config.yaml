@@ -11,12 +11,12 @@
     docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
     sublime_repo: "https://download.sublimetext.com/apt/stable/"
     image_dir: "/opt/wallpapers/"
-    burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
-    burpsuite_extras_jars:
     nord_package_url: "https://github.com/nordtheme/sublime-text.git"
     nord_package_file: "{{ sublime_packages_dir }}/nord.sublime-package"
     sublime_user_dir: "{{ user_home }}/.config/sublime-text/Packages/User"
     sublime_packages_dir: "{{ user_home }}/.config/sublime-text/Packages"
+    burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
+    burpsuite_extras_jars:
       jruby:
         jar: jruby-complete.jar
         url: https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.0.0/jruby-complete-9.4.0.0.jar

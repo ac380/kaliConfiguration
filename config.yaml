@@ -13,6 +13,10 @@
     image_dir: "/opt/wallpapers/"
     burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
     burpsuite_extras_jars:
+    nord_package_url: "https://github.com/nordtheme/sublime-text.git"
+    nord_package_file: "{{ sublime_packages_dir }}/nord.sublime-package"
+    sublime_user_dir: "{{ user_home }}/.config/sublime-text/Packages/User"
+    sublime_packages_dir: "{{ user_home }}/.config/sublime-text/Packages"
       jruby:
         jar: jruby-complete.jar
         url: https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.0.0/jruby-complete-9.4.0.0.jar
@@ -616,6 +620,24 @@
           cyan = "#6d96a5"
           white = "#aeb3bb"
 
+    - name: Ensure Sublime Text Packages directory exists
+      file:
+        path: "{{ sublime_packages_dir }}"
+        state: directory
+
+    - name: Download Nord color scheme .sublime-package file
+      git:
+        repo: "{{ nord_package_url }}"
+        dest: "{{ nord_package_file }}"
+
+    - name: Set Nord theme and color scheme in Preferences.sublime-settings
+      copy:
+        dest: "{{ sublime_user_dir }}/Preferences.sublime-settings"
+        content: |
+          {
+              "color_scheme": "Packages/User/nord-sublime-text/Nord.sublime-color-scheme"
+          }
+        mode: '0644'
 
     - name: Change default shell to Zsh
       user:

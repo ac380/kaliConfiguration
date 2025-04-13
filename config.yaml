@@ -219,7 +219,7 @@
           
           ZSH_THEME="bira"
 
-          randomtheme() {
+          updatetheme() {
             ZSH_THEMES=(bira dst clean sorin af-magic)
             local NEW_THEME="${ZSH_THEMES[RANDOM % 5]}"
             echo "Switching to random theme: $NEW_THEME"

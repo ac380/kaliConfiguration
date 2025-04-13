@@ -11,6 +11,19 @@
     docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
     sublime_repo: "https://download.sublimetext.com/apt/stable/"
     image_dir: "/opt/wallpapers/"
+    burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
+    burpsuite_extras_jars:
+      jruby:
+        jar: jruby-complete.jar
+        url: https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.0.0/jruby-complete-9.4.0.0.jar
+        checksum: sha256:e6817cf528976a50a054910f006ee34df07c4580c8a2a4c8c8d61cda0238a108
+      jython:
+        jar: jython-standalone.jar
+        url: https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.3/jython-standalone-2.7.3.jar
+        checksum: sha256:da7f3d829b148bcfa86b059dc964e3a8556fedb021096c8db07e30c66faab9b4
+    FirefoxPlugins:
+      - "foxyproxy-standard"
+      - "wappalyzer"
 
   tasks:
     - name: Update apt cache
@@ -640,6 +653,79 @@
         src: "/tmp/kaliConfiguration/files/panelconfig.tar.bz2"
         dest: "/tmp/"
         remote_src: yes
+
+    - name: Ensure BurpSuite extras directory exists
+      file:
+        path: "{{ burpsuite_extras_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download BurpSuite extra JARs
+      get_url:
+        url: "{{ item.value.url }}"
+        dest: "{{ burpsuite_extras_dir }}/{{ item.value.jar }}"
+        checksum: "{{ item.value.checksum }}"
+      loop: "{{ burpsuite_extras_jars | dict2items }}"
+
+    - name: Find burp jar file
+      find:
+        paths: /
+        patterns: "burp*.jar"
+        recurse: yes
+      register: burp_jar_files
+
+    - name: Get latest burp jar path
+      set_fact:
+        burp_jar: "{{ burp_jar_files.files | sort(attribute='path') | last }}"
+
+    - name: Run BurpSuite headlessly with timeout
+      become: yes
+      shell: |
+        /bin/bash -c "timeout 45 java -Djava.awt.headless=true -jar {{ burp_jar.path }} < <(echo y) &"
+      args:
+        executable: /bin/bash
+      async: 60
+      poll: 0
+
+    - name: Wait for BurpSuite to be ready
+      wait_for:
+        port: 8080
+        delay: 10
+        timeout: 30
+
+    - name: Download BurpSuite certificate
+      get_url:
+        url: http://localhost:8080/cert
+        dest: /tmp/cacert.der
+
+    - name: "Copying CA Certificate to /usr/local/share/ca-certificates"
+      copy:
+       src: /tmp/cacert.der
+       dest: /usr/local/share/ca-certificates/BurpSuiteCA.der
+       owner: root
+       group: root
+       mode: 0644
+      become: true
+      become_method: sudo
+
+    - name: Download Firefox policies template
+      get_url:
+        url: https://raw.githubusercontent.com/ac380/kaliConfiguration/refs/heads/main/files/policies.json.j2
+        dest: /tmp/policies.json.j2
+
+    - name: Update Firefox policies
+      template:
+        src: /tmp/policies.json.j2
+        dest: "/usr/share/firefox-esr/distribution/policies.json"
+
+    - name: Install Firefox extensions
+      become: true
+      become_user: kali
+      shell: >
+        firefox --headless --install-addon "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"
+      loop: "{{ FirefoxPlugins }}"
+      ignore_errors: true
+      async: 120
 
     - name: Ensure system is fully upgraded
       apt:

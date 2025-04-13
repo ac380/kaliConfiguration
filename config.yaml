@@ -514,8 +514,6 @@
           setw -g aggressive-resize on
           
           set -g @plugin 'tmux-plugins/tpm'
-          set -g @plugin 'christoomey/vim-tmux-navigator'
-          set -g @plugin 'jimeh/tmuxifier'
           set -g @plugin 'tmux-plugins/tmux-yank'
           set -g @plugin 'tmux-plugins/tmux-sensible'
           set -g @plugin 'tmux-plugins/tmux-logging'
@@ -819,7 +817,7 @@
         msg:
           - "POST-INSTALLATION STEPS:"
           - "1. Change your wallpaper and then run 'changebg'"
-          - "2. Change your icons to Windows icons"
+          - "2. Update TMUX and plugins, Ctrl+Space and Capital I"
           - "3. Import Panel configuration panel from tmp folder."
           - "4. Reboot"
       when: true

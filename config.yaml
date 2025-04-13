@@ -639,6 +639,11 @@
           }
         mode: '0644'
 
+    - name: Download custom Sublime config
+      get_url:
+        url: "https://raw.githubusercontent.com/ac380/kaliConfiguration/refs/heads/main/files/Default%20Dark.sublime-theme"
+        dest: "{{ sublime_user_dir }}/Preferences.sublime-settings/Default Dark.sublime-theme"
+
     - name: Change default shell to Zsh
       user:
         name: "{{ user }}"

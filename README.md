@@ -23,5 +23,4 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 ## To-do 
 - Make a config for non virtualized kali instances
 - Add all the needed tools, wordlists, and so on to make sure kali is complete even on minimal installations
-- Add browser extensions and burp certificates to the automation
   

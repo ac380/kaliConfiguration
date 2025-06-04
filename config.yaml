@@ -618,6 +618,19 @@
           cyan = "#6d96a5"
           white = "#aeb3bb"
 
+    - name: Ensure tmux plugin directory exists
+      file:
+        path: "{{ ansible_env.HOME }}/.tmux/plugins"
+        state: directory
+        mode: '0755'
+
+    - name: Clone TPM (Tmux Plugin Manager)
+      git:
+        repo: "https://github.com/tmux-plugins/tpm"
+        dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+        version: master
+        update: no
+    
     - name: Ensure Sublime Text Packages directory exists
       file:
         path: "{{ sublime_packages_dir }}"

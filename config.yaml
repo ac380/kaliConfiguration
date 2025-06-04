@@ -623,20 +623,6 @@
         path: "{{ sublime_packages_dir }}"
         state: directory
 
-    - name: Download Nord color scheme .sublime-package file
-      git:
-        repo: "{{ nord_package_url }}"
-        dest: "{{ nord_package_file }}"
-
-    - name: Set Nord theme and color scheme in Preferences.sublime-settings
-      copy:
-        dest: "{{ sublime_user_dir }}/Preferences.sublime-settings"
-        content: |
-          {
-              "color_scheme": "Packages/User/nord-sublime-text/Nord.sublime-color-scheme"
-          }
-        mode: '0644'
-
     - name: Download custom Sublime config
       get_url:
         url: "https://raw.githubusercontent.com/ac380/kaliConfiguration/refs/heads/main/files/Default%20Dark.sublime-theme"

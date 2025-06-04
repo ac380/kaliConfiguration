@@ -702,6 +702,18 @@
         group: "{{ user }}"
         mode: '0755'
 
+    - name: Fix ownership of Sublime Text config directory
+      file:
+        path: "/home/kali/.config/sublime-text"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        recurse: true
+
+    - name: Ensure Sublime Text config files are writable by user
+      ansible.builtin.command: chmod -R u+rw /home/"{{ user }}"/.config/sublime-text
+      args:
+        warn: false
+
     - name: Create random wallpaper script
       copy:
         dest: "/home/{{ user }}/.updatewallpaper.sh"

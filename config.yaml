@@ -87,6 +87,8 @@
           - burpsuite
           - metasploit-framework
           - nmap
+          - bloodhound
+          - rubeus
           - dirsearch
           - gobuster
           - sqlmap

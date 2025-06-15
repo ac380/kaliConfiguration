@@ -88,6 +88,8 @@
           - metasploit-framework
           - nmap
           - bloodhound
+          - sharphound
+          - bloodhound-ce-python
           - rubeus
           - dirsearch
           - gobuster

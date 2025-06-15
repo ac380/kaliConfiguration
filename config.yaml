@@ -605,14 +605,14 @@
 
     - name: Ensure tmux plugin directory exists
       file:
-        path: "{{ ansible_env.HOME }}/.tmux/plugins"
+        path: "{{ user_home }}/.tmux/plugins"
         state: directory
         mode: '0755'
 
     - name: Clone TPM (Tmux Plugin Manager)
       git:
         repo: "https://github.com/tmux-plugins/tpm"
-        dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+        dest: "{{ user_home }}/.tmux/plugins/tpm"
         version: master
         update: no
 

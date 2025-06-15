@@ -4,7 +4,7 @@ Contains all files and automations for the kali configuration
 ## Shortcuts
 Install Ansible  
 ```
-sudo apt update && apt install ansible -y
+sudo apt update && sudo apt install ansible -y
 ```
 
 Clone the repository  

@@ -9,12 +9,7 @@
     zsh_custom: "{{ user_home }}/.oh-my-zsh/custom"
     docker_gpg_key_url: "https://download.docker.com/linux/debian/gpg"
     docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
-    sublime_repo: "https://download.sublimetext.com/apt/stable/"
     image_dir: "/opt/wallpapers/"
-    nord_package_url: "https://github.com/nordtheme/sublime-text.git"
-    nord_package_file: "{{ sublime_packages_dir }}/nord.sublime-package"
-    sublime_user_dir: "{{ user_home }}/.config/sublime-text/Packages/User"
-    sublime_packages_dir: "{{ user_home }}/.config/sublime-text/Packages"
     burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
     burpsuite_extras_jars:
       jruby:
@@ -49,24 +44,23 @@
         regexp: '^#Storage='
         line: 'Storage=volatile'
 
-        
- # Add Sublime Text repository key and repo
-    - name: Add Sublime Text GPG key
+    # Add VS Code repository key and repo
+    - name: Add VS Code GPG key
       shell: |
-        wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | gpg --dearmor | tee /etc/apt/trusted.gpg.d/sublimehq-archive.gpg > /dev/null
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/packages.microsoft.gpg
       args:
-        creates: /etc/apt/trusted.gpg.d/sublimehq-archive.gpg
+        creates: /usr/share/keyrings/packages.microsoft.gpg
 
-    - name: Add Sublime Text repository
+    - name: Add VS Code repository
       shell: |
-        echo "deb https://download.sublimetext.com/ apt/stable/" | tee /etc/apt/sources.list.d/sublime-text.list
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list
       args:
-        creates: /etc/apt/sources.list.d/sublime-text.list
+        creates: /etc/apt/sources.list.d/vscode.list
 
-    - name: Install Sublime Text
+    - name: Install Visual Studio Code
       apt:
         update_cache: yes
-        name: sublime-text
+        name: code
         state: present
 
     - name: Install all required apps
@@ -123,15 +117,6 @@
       ansible.builtin.copy:
         src: "/usr/share/applications/kali-burpsuite.desktop"
         dest: "/home/{{ user }}/Desktop/kali-burpsuite.desktop"
-        mode: '0755'
-      become: true
-      become_user: "{{ user }}"  # Ensure the file is owned by the user
-
-    # Copy Sublime Text .desktop file
-    - name: Copy Sublime Text desktop file
-      ansible.builtin.copy:
-        src: "/usr/share/applications/sublime_text.desktop"
-        dest: "/home/{{ user }}/Desktop/sublime_text.desktop"
         mode: '0755'
       become: true
       become_user: "{{ user }}"  # Ensure the file is owned by the user
@@ -374,8 +359,8 @@
           if [ -f /etc/zsh_command_not_found ]; then
               . /etc/zsh_command_not_found
           fi
-          # Set default editor to Sublime Text
-          EDITOR='subl'
+          # Set default editor to Vscode
+          EDITOR='code'
           
           # Aliases for exa (a modern replacement for 'ls')
           alias ls='exa -T -L=1 -a -B -h -l -g --icons'
@@ -630,16 +615,6 @@
         dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
         version: master
         update: no
-    
-    - name: Ensure Sublime Text Packages directory exists
-      file:
-        path: "{{ sublime_packages_dir }}"
-        state: directory
-
-    - name: Download custom Sublime config
-      get_url:
-        url: "https://raw.githubusercontent.com/ac380/kaliConfiguration/refs/heads/main/files/Default%20Dark.sublime-theme"
-        dest: "{{ sublime_user_dir }}/Default Dark.sublime-theme"
 
     - name: Change default shell to Zsh
       user:
@@ -701,18 +676,6 @@
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: '0755'
-
-    - name: Fix ownership of Sublime Text config directory
-      file:
-        path: "/home/kali/.config/sublime-text"
-        owner: "{{ user }}"
-        group: "{{ user }}"
-        recurse: true
-
-    - name: Ensure Sublime Text config files are writable by user
-      ansible.builtin.command: chmod -R u+rw /home/"{{ user }}"/.config/sublime-text
-      args:
-        warn: false
 
     - name: Create random wallpaper script
       copy:
@@ -830,5 +793,6 @@
           - "1. Change your wallpaper and then run 'updatebg'"
           - "2. Update TMUX and plugins, Ctrl+Space and Capital I"
           - "3. Import Panel configuration panel from tmp folder."
-          - "4. Reboot"
+          - "4. Open Vscode and install the Nord Extension"
+          - "5. Reboot"
       when: true

@@ -4,7 +4,7 @@ Contains all files and automations for the kali configuration
 ## Shortcuts
 Install Ansible  
 ```
-sudo apt install ansible -y
+sudo apt update && apt install ansible -y
 ```
 
 Clone the repository  
@@ -23,4 +23,5 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 ## To-do 
 - Make a config for non virtualized kali instances
 - Add all the needed tools, wordlists, and so on to make sure kali is complete even on minimal installations
+- Find a way to implement all customizations automatically and without rebooting.
   

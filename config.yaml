@@ -791,7 +791,7 @@
         msg:
           - "POST-INSTALLATION STEPS:"
           - "1. Change your wallpaper and then run 'updatebg'"
-          - "2. Update TMUX and plugins, Ctrl+Space and Capital I"
+          - "2. Update TMUX and plugins, Ctrl+Space and Capital I, Ctrl+Space and Capital U and type all"
           - "3. Import Panel configuration panel from tmp folder."
           - "4. Open Vscode and install the Nord Extension"
           - "5. Reboot"

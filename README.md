@@ -21,6 +21,7 @@ sudo ansible-playbook /tmp/kaliConfiguration/config.yaml
 Run the playbook as sudo as some changes require sudo configuration, pay attention to the post installation steps once it all ran.
 
 ## To-do 
+- Optimize aliases and dot file, useful stuff on Chris Titus tool
 - Make a config for non virtualized kali instances
 - Add all the needed tools, wordlists, and so on to make sure kali is complete even on minimal installations
 - Find a way to implement all customizations automatically and without rebooting.

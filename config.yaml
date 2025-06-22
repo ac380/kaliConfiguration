@@ -431,15 +431,35 @@
           # Add local bin directory to the system PATH
           export PATH=$PATH:/home/{{ user }}/.local/bin        
           
-          # Auto Tmux Loggin:
+          # Auto Tmux Logging
           if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
             export TMUX_PANE_LOGGING=1
-            LOGS=$HOME/Logs/$(date +%Y-%m-%d)
-            mkdir --parents $LOGS
-            LOG_PATH="$LOGS/pane${TMUX_PANE//[^0-9]/}.log"
-            tmux pipe-pane -o -t "${TMUX_PANE}" "exec cat - | ansifilter >> $LOG_PATH"
+          
+            # Get timestamps
+            DATE_FOLDER=$(date +%d-%b-%Y)              
+            TIME_FOLDER=$(date +%Hh%Mm)             
+          
+            # Set log root with improved naming
+            LOG_ROOT="$HOME/tmux_logs/$DATE_FOLDER/$TIME_FOLDER"
+          
+            # Create colored and normal subfolders
+            COLORED_LOGS="$LOG_ROOT/colored"
+            NORMAL_LOGS="$LOG_ROOT/normal"
+            mkdir -p "$COLORED_LOGS" "$NORMAL_LOGS"
+          
+            # Get session/window/pane info
+            SESSION=$(tmux display-message -p '#S')
+            WINDOW=$(tmux display-message -p '#I')
+            PANE=$(tmux display-message -p '#P')
+          
+            # Build log file names
+            LOG_PREFIX="${SESSION}_win${WINDOW}_pane${PANE}"
+            COLOR_LOG="$COLORED_LOGS/${LOG_PREFIX}.log"
+            NORMAL_LOG="$NORMAL_LOGS/${LOG_PREFIX}.log"
+          
+            # Log both colored and plain output
+            tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
           fi
-
 
     - name: Add custom Tmux configuration
       copy:

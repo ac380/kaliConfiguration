@@ -81,6 +81,7 @@
           - whatweb
           - dnsrecon
           - nikto
+          - ansifilter
           - john
           - aircrack-ng
           - hydra
@@ -428,15 +429,12 @@
           alias lgu='sudo ip tuntap add user {{ user }} mode tun ligolo && sudo ip link set ligolo up'
           
           # Add local bin directory to the system PATH
-          export PATH=$PATH:/home/{{ user }}/.local/bin
-          
-          # Launch Bloodhound
-          alias bh='docker compose -f ~/.dotfiles/bloodhound/docker-compose.yml up && echo "BloodHound starting"'          
+          export PATH=$PATH:/home/{{ user }}/.local/bin        
           
           # Auto Tmux Loggin:
           if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
             export TMUX_PANE_LOGGING=1
-            LOGS=$HOME/tmux_logs/$(date +%Y-%m-%d)
+            LOGS=$HOME/Logs/$(date +%Y-%m-%d)
             mkdir --parents $LOGS
             LOG_PATH="$LOGS/pane${TMUX_PANE//[^0-9]/}.log"
             tmux pipe-pane -o -t "${TMUX_PANE}" "exec cat - | ansifilter >> $LOG_PATH"

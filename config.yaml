@@ -23,8 +23,13 @@
     FirefoxPlugins:
       - "foxyproxy-standard"
       - "wappalyzer"
-
+      
   tasks:
+    - name: Remove conflicting vscode.sources file if exists
+      file:
+        path: /etc/apt/sources.list.d/vscode.sources
+        state: absent
+        
     - name: Update apt cache
       apt:
         update_cache: yes
@@ -43,11 +48,6 @@
         path: /etc/systemd/journald.conf
         regexp: '^#Storage='
         line: 'Storage=volatile'
-
-    - name: Remove conflicting vscode.sources file if exists
-      file:
-        path: /etc/apt/sources.list.d/vscode.list
-        state: absent
 
     - name: Add VS Code GPG key
       shell: |

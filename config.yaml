@@ -72,6 +72,24 @@
         name:  
           - zsh
           - curl
+          - dnsrecon
+          - enum4linux
+          - feroxbuster
+          - gobuster
+          - impacket-scripts
+          - nbtscan
+          - nikto
+          - nmap
+          - onesixtyone
+          - oscanner
+          - redis-tools
+          - smbclient
+          - smbmap
+          - snmpwalk
+          - sslscan
+          - svwar
+          - tnscmd10g
+          - whatweb
           - wget
           - chromium
           - alacritty
@@ -82,29 +100,22 @@
           - unzip
           - fzf
           - bat
-          - whatweb
-          - dnsrecon
-          - nikto
           - ansifilter
           - john
           - aircrack-ng
           - hydra
           - burpsuite
           - metasploit-framework
-          - nmap
           - bloodhound
           - sharphound
           - bloodhound-ce-python
           - rubeus
           - dirsearch
-          - gobuster
           - sqlmap
           - hashcat
           - responder
           - crackmapexec
           - masscan
-          - smbclient
-          - smbmap
           - autorecon
           - exiftool
           - ligolo-ng

@@ -85,7 +85,6 @@
           - redis-tools
           - smbclient
           - smbmap
-          - snmpwalk
           - sslscan
           - svwar
           - tnscmd10g

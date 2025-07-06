@@ -46,7 +46,7 @@
 
     - name: Remove conflicting vscode.sources file if exists
       file:
-        path: /etc/apt/sources.list.d/vscode.sources
+        path: /etc/apt/sources.list.d/vscode.list
         state: absent
 
     - name: Add VS Code GPG key

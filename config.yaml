@@ -86,8 +86,6 @@
           - smbclient
           - smbmap
           - sslscan
-          - svwar
-          - tnscmd10g
           - whatweb
           - wget
           - chromium

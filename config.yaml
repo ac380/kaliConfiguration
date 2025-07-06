@@ -395,7 +395,7 @@
           alias updatebg='/home/{{user}}/.updatewallpaper.sh'
           
           # Alias for running AutoRecon (with sudo) and preserving the $PATH
-          alias autorecon='sudo env "PATH=$PATH" autorecon'
+          alias autorecon='sudo env "PATH=$PATH" autorecon --dirbuster.tool dirsearch'
           
           
           # URL decode function using Python3

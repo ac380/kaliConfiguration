@@ -133,7 +133,7 @@
 
     - name: Download and install Kerbrute
       get_url:
-        url: https://github.com/ropnop/kerbrute/releases/download/v1.0.3/kerbrute_linux_amd64
+        url: https://github.com/ropnop/kerbrute/releases/latest/download/kerbrute_linux_amd64
         dest: /usr/local/bin/kerbrute
         mode: '0755'
 
@@ -684,6 +684,39 @@
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: '0755'
+
+     - name: Create Engagement directory
+      file:
+        path: "{{ user_home }}/Engagement"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '0755'
+
+     - name: Create Engagement Binaries directory
+      file:
+        path: "{{ user_home }}/Engagement/Binaries"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '0755'
+
+    - name: Download tools to /usr/local/bin/
+      get_url:
+        url: "{{ item }}"
+        dest: "{{ user_home }}/Engagement/Binaries"
+        mode: '0755'
+      loop:
+        - https://github.com/gentilkiwi/mimikatz/releases/latest/download/mimikatz_trunk.zip
+        - https://github.com/SpecterOps/SharpHound/releases/download/v2.6.7/SharpHound_v2.6.7_windows_x86.zip
+        - https://github.com/jpillora/chisel/releases/download/v1.10.1/chisel_1.10.1_linux_amd64.deb
+        - https://github.com/jpillora/chisel/releases/download/v1.10.1/chisel_1.10.1_windows_amd64.gz
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas_linux_amd64
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas_fat.sh 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany_ofs.exe 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASx64.exe 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEAS.bat 
         
     - name: Copy new wallpapers in the new wallpaper folder
       copy:

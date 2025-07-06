@@ -44,7 +44,11 @@
         regexp: '^#Storage='
         line: 'Storage=volatile'
 
-    # Add VS Code repository key and repo
+    - name: Remove conflicting vscode.sources file if exists
+      file:
+        path: /etc/apt/sources.list.d/vscode.sources
+        state: absent
+
     - name: Add VS Code GPG key
       shell: |
         wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/packages.microsoft.gpg

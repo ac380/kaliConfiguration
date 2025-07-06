@@ -708,6 +708,9 @@
 
     - name: Install updog via pipx
       command: pipx install updog
+      
+    - name: Install Penelope via pipx
+      command: pipx install git+https://github.com/brightio/penelope
 
     - name: Download tools to /usr/local/bin/
       get_url:

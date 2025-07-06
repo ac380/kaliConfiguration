@@ -686,15 +686,15 @@
         group: "{{ user }}"
         mode: '0755'
 
-     - name: Create Engagement directory
+    - name: Create Engagement directory
       file:
         path: "{{ user_home }}/Engagement"
         state: directory
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: '0755'
-
-     - name: Create Engagement Binaries directory
+        
+    - name: Create Engagement Binaries directory
       file:
         path: "{{ user_home }}/Engagement/Binaries"
         state: directory
@@ -702,7 +702,7 @@
         group: "{{ user }}"
         mode: '0755'
 
-     - name: Install updog via pipx
+    - name: Install updog via pipx
       command: pipx install updog
 
     - name: Download tools to /usr/local/bin/

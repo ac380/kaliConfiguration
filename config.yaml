@@ -106,6 +106,7 @@
           - ligolo-ng
           - evil-winrm
           - git
+          - pipx
         state: present
 
     # Copy Chromium .desktop file
@@ -700,6 +701,9 @@
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: '0755'
+
+     - name: Install updog via pipx
+      command: pipx install updog
 
     - name: Download tools to /usr/local/bin/
       get_url:

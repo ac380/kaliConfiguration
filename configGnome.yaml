@@ -87,7 +87,6 @@
           - sslscan
           - whatweb
           - wget
-          - chromium
           - alacritty
           - eza
           - seclists
@@ -775,4 +774,4 @@
       become: true
       become_user: "{{ user }}"
       shell: >
-        gsettings set org.gnome.shell favorite-apps "['Alacritty.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'chromium.desktop', 'kali-burpsuite.desktop', 'code.desktop', 'org.gnome.Settings.desktop']"
+        gsettings set org.gnome.shell favorite-apps "['Alacritty.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'kali-burpsuite.desktop', 'code.desktop', 'org.gnome.Settings.desktop']"

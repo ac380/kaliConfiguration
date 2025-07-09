@@ -369,6 +369,16 @@
           - Alt + k        : Resize pane up (Alt + k)
           - Alt + j        : Resize pane down (Alt + j)
           "'
+
+          # Shows Gnome shortcuts
+          alias tmuxshortcuts='echo "
+          Important Gnome Shortcuts:
+          ===========================
+
+          - Alt + F2       : Open Command Launcher
+          - Win + Tab      : Window Switcher
+          - Win + PgUp/Dwn : Switch Workspaces
+          "'
           
           # Export the IP address of a target box
           export box="INSERT BOX IP"

@@ -631,7 +631,7 @@
 
     - name: Create wallpapers directory
       file:
-        path: "{{ image_dir }}"
+        path: "/opt/wallpapers"
         state: directory
         owner: "{{ user }}"
         group: "{{ user }}"

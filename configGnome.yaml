@@ -2,7 +2,6 @@
 - name: Configure the Kali Machine
   hosts: localhost
   become: yes
-  gather_facts: true
   vars:
     user: "{{ lookup('env', 'SUDO_USER') }}"
     user_home: "/home/{{user}}"
@@ -25,6 +24,9 @@
       - "wappalyzer"
       
   tasks:
+    - name: Set Rome Timezone
+      shell: timedatectl set-timezone Europe/Rome
+  
     - name: Update apt cache
       apt:
         update_cache: yes

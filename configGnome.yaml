@@ -371,13 +371,26 @@
           "'
 
           # Shows Gnome shortcuts
-          alias tmuxshortcuts='echo "
+          alias gnomeshortcuts='echo "
           Important Gnome Shortcuts:
           ===========================
 
           - Alt + F2       : Open Command Launcher
           - Win + Tab      : Window Switcher
           - Win + PgUp/Dwn : Switch Workspaces
+          "'
+                   
+          # Shows Terminal shortcuts
+          alias terminalshortcuts='echo "
+          Important Terminal Shortcuts:
+          ===========================
+
+          - Alt + B        : Move cursor back one word
+          - Alt + F        : Move cursor forward one word
+          - Alt + D        : Delete Word after cursor
+          - Ctrl + W       : Delete Word before cursor
+          - Ctrl + A       : Move cursor to beginning of line
+          - Ctrl + E       : Move cursor to end of line
           "'
           
           # Export the IP address of a target box

@@ -146,7 +146,9 @@
       loop:
         - { name: "zsh-syntax-highlighting", repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
         - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions" }
-        - { name: "zsh-autocomplete", repo: "https://github.com/marlonrichert/zsh-autocomplete.git" }
+        - { name: "you-should-use", repo: "https://github.com/MichaelAquilina/zsh-you-should-use.git" }
+        - { name: "zsh-history-substring-search", repo: "https://github.com/zsh-users/zsh-history-substring-search" }
+        - { name: "F-Sy-H", repo: "https://github.com/z-shell/F-Sy-H.git" }
 
     - name: Ensure Zsh is installed before changing default shell
       command: which zsh
@@ -172,9 +174,11 @@
           ZSH_THEME="bira"
               
           plugins=(
-            zsh-interactive-cd
-            zsh-autosuggestions
-            zsh-syntax-highlighting
+              zsh-interactive-cd
+              zsh-autosuggestions
+              you-should-use
+              zsh-history-substring-search
+              F-Sy-H
           )
 
           source $ZSH/oh-my-zsh.sh

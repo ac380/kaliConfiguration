@@ -61,14 +61,20 @@
         autoremove: yes
         allow_unauthenticated: yes
         force: yes
-
+        
+    - name: Check if GNOME is already installed
+      stat:
+        path: /usr/share/xsessions/gnome.desktop
+      register: gnome_installed
+  
     - name: Reboot system to apply GNOME changes
       reboot:
         msg: "Rebooting into GNOME Desktop..."
         pre_reboot_delay: 3
         reboot_timeout: 600
         test_command: whoami
-
+      when: not gnome_installed.stat.exists
+      
     - name: Wait for SSH to become available
       wait_for_connection:
         delay: 10

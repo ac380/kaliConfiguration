@@ -591,6 +591,14 @@
         version: master
         update: no
 
+    - name: Ensure TPM directory is owned by the target user
+      file:
+        path: "{{ user_home }}/.tmux/plugins"
+        state: directory
+        recurse: yes
+        owner: "{{ user }}"
+        group: "{{ user }}"
+
     - name: Change default shell to Zsh
       user:
         name: "{{ user }}"

@@ -21,7 +21,7 @@ sudo apt install -y kali-desktop-gnome
 sudo apt purge --autoremove --allow-remove-essential kali-desktop-xfce
 
 Reboot
-
+git clone https://github.com/ac380/kaliConfiguration.git /tmp/kaliConfiguration
 sudo ansible-playbook /tmp/kaliConfiguration/configGnome.yaml
 ```
 

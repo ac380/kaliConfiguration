@@ -9,7 +9,6 @@
     zsh_custom: "{{ user_home }}/.oh-my-zsh/custom"
     docker_gpg_key_url: "https://download.docker.com/linux/debian/gpg"
     docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
-    image_dir: "/opt/wallpapers/"
     burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
     burpsuite_extras_jars:
       jruby:
@@ -678,7 +677,7 @@
     - name: Copy new wallpapers in the new wallpaper folder
       copy:
         src: "/tmp/kaliConfiguration/wallpapers"
-        dest: "{{ image_dir }}"
+        dest: "/opt/"
         mode: '0644'
       when: true
 

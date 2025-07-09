@@ -776,4 +776,4 @@
       become: true
       become_user: "{{ user }}"
       shell: >
-        gsettings set org.gnome.shell favorite-apps "['org.gnome.Terminal.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'chromium.desktop', 'kali-burpsuite.desktop', 'code.desktop', 'org.gnome.Settings.desktop']"
+        gsettings set org.gnome.shell favorite-apps "['Alacritty.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'chromium.desktop', 'kali-burpsuite.desktop', 'code.desktop', 'org.gnome.Settings.desktop']"

@@ -200,7 +200,6 @@
         - { name: "you-should-use", repo: "https://github.com/MichaelAquilina/zsh-you-should-use.git" }
         - { name: "zsh-history-substring-search", repo: "https://github.com/zsh-users/zsh-history-substring-search" }
         - { name: "F-Sy-H", repo: "https://github.com/z-shell/F-Sy-H.git" }
-        https://github.com/z-shell/F-Sy-H.git
 
     - name: Ensure Zsh is installed before changing default shell
       command: which zsh

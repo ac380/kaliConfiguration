@@ -29,6 +29,11 @@
       apt:
         update_cache: yes
         cache_valid_time: 3600
+
+    - name: Check if GNOME is already installed
+      stat:
+        path: /usr/share/xsessions/gnome.desktop
+      register: gnome_installed
     
     - name: Install GNOME Desktop Environment
       apt:
@@ -54,18 +59,7 @@
         enabled: true
 
     - name: Remove XFCE Desktop Environment
-      apt:
-        name: kali-desktop-xfce
-        state: absent
-        purge: yes
-        autoremove: yes
-        allow_unauthenticated: yes
-        force: yes
-        
-    - name: Check if GNOME is already installed
-      stat:
-        path: /usr/share/xsessions/gnome.desktop
-      register: gnome_installed
+      shell: sudo apt purge --autoremove --allow-remove-essential -y kali-desktop-xfce
   
     - name: Reboot system to apply GNOME changes
       reboot:

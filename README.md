@@ -37,4 +37,6 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 # To-do 
 - Optimize aliases and dot file, useful stuff on Chris Titus tool
 - Automate bloodhound port change
+- Potato Scripts in Binaries already
+- Adjust further XFCE Panels to mimic GNOME
   

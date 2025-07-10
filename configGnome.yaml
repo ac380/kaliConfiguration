@@ -689,9 +689,13 @@
         mode: '0755'
 
     - name: Install updog via pipx
+      become: true
+      become_user: "{{ user }}"
       command: pipx install updog
       
     - name: Install Penelope via pipx
+      become: true
+      become_user: "{{ user }}"
       command: pipx install git+https://github.com/brightio/penelope
 
     - name: Download tools to /usr/local/bin/
@@ -719,8 +723,18 @@
       when: true
 
     - name: Immediately swap to a random wallpaper
-      shell: gsettings set org.gnome.desktop.background picture-uri-dark "file://$(find /opt/wallpapers -type f | shuf -n1)"
-      
+      become: true
+      become_user: "{{ user }}"
+      shell: |
+        PID=$(pgrep -u kali -f "gnome-session|gnome-shell|Xwayland" | head -n1)
+        if [[ -z "$PID" ]]; then echo "❌ Could not find GNOME session PID."; exit 1; fi
+
+        export XDG_RUNTIME_DIR="/run/user/$(id -u kali)"
+        export DBUS_SESSION_BUS_ADDRESS=$(tr "\0" "\n" < /proc/$PID/environ | grep DBUS_SESSION_BUS_ADDRESS | cut -d= -f2-)
+        if [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]]; then echo "❌ Could not extract DBUS_SESSION_BUS_ADDRESS."; exit 1; fi
+
+        gsettings set org.gnome.desktop.background picture-uri-dark "file://$(find /opt/wallpapers -type f | shuf -n1)"
+
     - name: Ensure BurpSuite extras directory exists
       file:
         path: "{{ burpsuite_extras_dir }}"
@@ -806,8 +820,18 @@
         clean: yes
      
     - name: Set dock apps
-      shell: gsettings set org.gnome.shell favorite-apps "['Alacritty.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'kali-burpsuite.desktop', 'code.desktop', 'org.gnome.Settings.desktop']"
+      become: true
+      become_user: "{{ user}}"
+      shell: |
+        PID=$(pgrep -u kali -f "gnome-session|gnome-shell|Xwayland" | head -n1)
+        if [[ -z "$PID" ]]; then echo "❌ Could not find GNOME session PID."; exit 1; fi
 
+        export XDG_RUNTIME_DIR="/run/user/$(id -u kali)"
+        export DBUS_SESSION_BUS_ADDRESS=$(tr "\0" "\n" < /proc/$PID/environ | grep DBUS_SESSION_BUS_ADDRESS | cut -d= -f2-)
+        if [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]]; then echo "❌ Could not extract DBUS_SESSION_BUS_ADDRESS."; exit 1; fi
+
+        gsettings set org.gnome.shell favorite-apps "['Alacritty.desktop', 'org.gnome.Nautilus.desktop', 'firefox-esr.desktop', 'kali-burpsuite.desktop', 'code.desktop', 'org.gnome.Settings.desktop']"
+    
     - name: Display post-installation reminders
       debug:
         msg:

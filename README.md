@@ -36,5 +36,5 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 
 # To-do 
 - Optimize aliases and dot file, useful stuff on Chris Titus tool
-- GNOME: Double check initial background change, automate bloodhound port change, 
+- Automate bloodhound port change
   

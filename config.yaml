@@ -348,7 +348,7 @@
               export LS_COLORS="$LS_COLORS:ow=30;44:" # fix ls color for folders with 777 permissions
           
               alias ls='ls --color=auto'
-              #alias dir='dir --color=auto'
+              alias dir='dir --color=auto'
               #alias vdir='vdir --color=auto'
           
               alias grep='grep --color=auto'
@@ -546,9 +546,6 @@
           set -g @plugin 'tmux-plugins/tmux-sessionist'
           
           set -g @plugin "arcticicestudio/nord-tmux"
-
-          if "test ! -d ~/.tmux/plugins/tpm" \
-             "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
              
           run '~/.tmux/plugins/tpm/tpm'
 
@@ -657,6 +654,14 @@
         version: master
         update: no
 
+    - name: Ensure TPM directory is owned by the target user
+      file:
+        path: "{{ user_home }}/.tmux/plugins"
+        state: directory
+        recurse: yes
+        owner: "{{ user }}"
+        group: "{{ user }}"
+
     - name: Change default shell to Zsh
       user:
         name: "{{ user }}"
@@ -721,9 +726,13 @@
         mode: '0755'
 
     - name: Install updog via pipx
+      become: true
+      become_user: "{{ user }}"
       command: pipx install updog
       
     - name: Install Penelope via pipx
+      become: true
+      become_user: "{{ user }}"
       command: pipx install git+https://github.com/brightio/penelope
 
     - name: Download tools to /usr/local/bin/
@@ -848,7 +857,7 @@
 
     - name: Install Firefox extensions
       become: true
-      become_user: kali
+      become_user: "{{user}}"
       shell: >
         firefox --headless --install-addon "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"
       loop: "{{ FirefoxPlugins }}"

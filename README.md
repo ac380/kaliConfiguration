@@ -36,7 +36,9 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 
 # To-do 
 - Optimize aliases and dot file, useful stuff on Chris Titus tool
-- Automate bloodhound port change
-- Potato Scripts in Binaries already, Ligolo in binaries already
+- Automate ligolo port change
+- Automate burp certificate properly
+- Add reminder to change burp and foxyproxy port to avoid bloodhound conflicts
+- Potato Scripts in Binaries, Ligolo in binaries too
 - Adjust further XFCE Panels to mimic GNOME
   

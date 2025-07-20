@@ -36,7 +36,5 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 
 # To-do 
 - Optimize aliases and dot file, useful stuff on Chris Titus tool
-- Automate ligolo port change
-- Automate burp certificate properly
-- Add reminder to change burp and foxyproxy port to avoid bloodhound conflicts
+- Automate burp certificate properly (Should be working now)
   

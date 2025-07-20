@@ -852,6 +852,10 @@
       poll: 0   
       ignore_errors: true
 
+    - name: Swap panels
+      shell: |
+        xfce4-panel-profiles load /tmp/kaliConfiguration/files/newPanel.tar.bz2
+
     - name: Ensure system is fully upgraded
       apt:
         upgrade: full

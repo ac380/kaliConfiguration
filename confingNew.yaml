@@ -148,6 +148,18 @@
         url: https://github.com/ropnop/kerbrute/releases/latest/download/kerbrute_linux_amd64
         dest: /usr/local/bin/kerbrute
         mode: '0755'
+        
+    - name: Create JetBrains directory
+      file:
+        path: /usr/local/share/fonts/JetBrainsNerdFont
+        state: directory
+        mode: '0755'
+
+    - name: Create Inter directory
+      file:
+        path: /usr/local/share/fonts/Inter
+        state: directory
+        mode: '0755'
 
     - name: Download Jet Brains Nerd Font
       get_url:
@@ -158,19 +170,13 @@
     - name: Extract Jet Brains Nerd Font
       unarchive:
         src: /tmp/JetBrainsMono.zip
-        dest: "/usr/local/share/fonts/"
+        dest: "/usr/local/share/fonts/JetBrainsNerdFont"
         remote_src: yes
 
-    - name: Download Ubuntu Mono Nerd Font
-      get_url:
-        url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/UbuntuMono.zip
-        dest: /tmp/UbuntuMono.zip
-        mode: '0644'
-
-    - name: Extract Ubuntu Mono Nerd Font
+    - name: Extract Inter Mono Nerd Font
       unarchive:
-        src: /tmp/UbuntuMono.zip
-        dest: "/usr/local/share/fonts/"
+        src: /tmp/Inter.zip
+        dest: "/usr/local/share/fonts/Inter"
         remote_src: yes
 
     - name: Update font cache

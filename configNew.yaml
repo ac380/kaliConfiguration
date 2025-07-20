@@ -844,6 +844,8 @@
       template:
         src: /tmp/kaliConfiguration/files/policies.json.j2
         dest: "/usr/share/firefox-esr/distribution/policies.json"
+      become: true
+      become_method: sudo
 
     - name: Install Firefox extensions
       shell: >
@@ -852,6 +854,7 @@
       async: 30  
       poll: 0   
       ignore_errors: true
+
 
     - name: Swap panels
       shell: |

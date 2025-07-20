@@ -855,6 +855,11 @@
     - name: Swap panels
       shell: |
         xfce4-panel-profiles load /tmp/kaliConfiguration/files/newPanel.tar.bz2
+        
+    # Found through monitoring xfconf-query -c xfwm4 -m and changing the setting
+    - name: Remove panel shadows
+      shell: |
+        xfconf-query -c xfwm4 -p /general/show_dock_shadow -s false
 
     - name: Ensure system is fully upgraded
       apt:

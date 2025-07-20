@@ -39,5 +39,4 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 - Automate ligolo port change
 - Automate burp certificate properly
 - Add reminder to change burp and foxyproxy port to avoid bloodhound conflicts
-- Potato Scripts in Binaries, Ligolo in binaries too
   

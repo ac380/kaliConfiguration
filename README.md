@@ -40,5 +40,4 @@ Run the playbook as sudo as some changes require sudo configuration, pay attenti
 - Automate burp certificate properly
 - Add reminder to change burp and foxyproxy port to avoid bloodhound conflicts
 - Potato Scripts in Binaries, Ligolo in binaries too
-- Adjust further XFCE Panels to mimic GNOME
   

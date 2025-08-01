@@ -7,7 +7,6 @@
     zsh_config: "{{ user_home }}/.zshrc"
     docker_gpg_key_url: "https://download.docker.com/linux/debian/gpg"
     docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
-    image_dir: "/opt/wallpapers/"
     burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
     burpsuite_extras_jars:
       jruby:
@@ -408,10 +407,6 @@
       async: 30  
       poll: 0   
       ignore_errors: true
-
-    - name: Swap panels
-      shell: |
-        xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
 
     - name: Ensure system is fully upgraded
       become: yes

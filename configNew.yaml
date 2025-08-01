@@ -748,12 +748,6 @@
           
         mode: '0755'
 
-    - name: Extract Panel Config
-      unarchive:
-        src: "/tmp/kaliConfiguration/files/panelconfig.tar.bz2"
-        dest: "/tmp/"
-        remote_src: yes
-
     - name: Ensure BurpSuite extras directory exists
       file:
         path: "{{ burpsuite_extras_dir }}"
@@ -825,7 +819,7 @@
 
     - name: Swap panels
       shell: |
-        xfce4-panel-profiles load /tmp/kaliConfiguration/files/newPanel.tar.bz2
+        xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
         
     - name: Ensure system is fully upgraded
       become: yes

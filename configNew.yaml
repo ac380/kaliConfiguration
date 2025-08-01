@@ -149,40 +149,6 @@
         dest: /usr/local/bin/kerbrute
         mode: '0755'
         
-    - name: Create JetBrains directory
-      file:
-        path: /usr/local/share/fonts/JetBrainsNerdFont
-        state: directory
-        mode: '0755'
-
-    - name: Create Inter directory
-      file:
-        path: /usr/local/share/fonts/Inter
-        state: directory
-        mode: '0755'
-
-    - name: Download Jet Brains Nerd Font
-      get_url:
-        url: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.3.0/JetBrainsMono.zip
-        dest: /tmp/JetBrainsMono.zip
-        mode: '0644'
-
-    - name: Extract Jet Brains Nerd Font
-      unarchive:
-        src: /tmp/JetBrainsMono.zip
-        dest: "/usr/local/share/fonts/JetBrainsNerdFont"
-        remote_src: yes
-
-    - name: Extract Inter Mono Nerd Font
-      unarchive:
-        src: /tmp/Inter.zip
-        dest: "/usr/local/share/fonts/Inter"
-        remote_src: yes
-
-    - name: Update font cache
-      command: fc-cache -fv
-      become_user: "{{ user }}"
-
     - name: Install oh-my-zsh
       become_user: "{{ user }}"
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended

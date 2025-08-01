@@ -2,7 +2,7 @@
 - name: Configure the Kali Machine
   hosts: localhost
   vars:
-    user: "{{ lookup('env', 'SUDO_USER') }}"
+    user: "{{ lookup('env', 'USER') }}"
     user_home: "/home/{{user}}"
     zsh_config: "{{ user_home }}/.zshrc"
     zsh_custom: "{{ user_home }}/.oh-my-zsh/custom"

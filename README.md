@@ -29,6 +29,8 @@ sudo ansible-playbook /tmp/kaliConfiguration/configGnome.yaml
 Run the config.yaml  
 ```
 sudo ansible-playbook /tmp/kaliConfiguration/config.yaml
+OR
+ansible-playbook /tmp/kaliConfiguration/configNew.yaml -K
 ```
 
 ### Information

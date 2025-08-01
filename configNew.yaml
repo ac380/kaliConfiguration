@@ -24,6 +24,7 @@
       
   tasks:
     - name: Remove conflicting vscode.sources file if exists
+      become: yes
       file:
         path: /etc/apt/sources.list.d/vscode.sources
         state: absent
@@ -106,12 +107,6 @@
           - git
           - pipx
         state: present
-        
-    - name: Download and install Kerbrute
-      get_url:
-        url: https://github.com/ropnop/kerbrute/releases/latest/download/kerbrute_linux_amd64
-        dest: /usr/local/bin/kerbrute
-        mode: '0755'
 
     - name: Install Zsh plugins
       become: yes
@@ -537,6 +532,7 @@
         group: "{{ user }}"
 
     - name: Change default shell to Zsh
+      become: yes
       user:
         name: "{{ user }}"
         shell: /bin/zsh
@@ -581,6 +577,7 @@
         append: yes
 
     - name: Create wallpapers directory
+      become: yes
       file:
         path: "{{ image_dir }}"
         state: directory
@@ -626,6 +623,7 @@
         - https://github.com/antonioCoco/RoguePotato/releases/download/1.0/RoguePotato.zip
     
     - name: Copy new wallpapers in the new wallpaper folder
+      become: yes
       copy:
         src: "/tmp/kaliConfiguration/wallpapers"
         dest: "{{ image_dir }}"
@@ -633,6 +631,7 @@
       when: true
       
     - name: Grant write permissions to the user for the lightdm-gtk-greeter.conf
+      become: yes
       file:
         path: /etc/lightdm/
         owner: "{{ user }}"
@@ -656,12 +655,14 @@
         mode: '0755'
 
     - name: Ensure BurpSuite extras directory exists
+      become: yes
       file:
         path: "{{ burpsuite_extras_dir }}"
         state: directory
         mode: '0755'
 
     - name: Download BurpSuite extra JARs
+      become: yes
       get_url:
         url: "{{ item.value.url }}"
         dest: "{{ burpsuite_extras_dir }}/{{ item.value.jar }}"
@@ -669,6 +670,7 @@
       loop: "{{ burpsuite_extras_jars | dict2items }}"
 
     - name: Find burp jar file
+      become: yes
       find:
         paths: /
         patterns: "burp*.jar"
@@ -676,6 +678,7 @@
       register: burp_jar_files
 
     - name: Get latest burp jar path
+      become: yes
       set_fact:
         burp_jar: "{{ burp_jar_files.files | sort(attribute='path') | last }}"
 
@@ -700,14 +703,13 @@
         dest: /tmp/cacert.der
 
     - name: "Copying CA Certificate to /usr/local/share/ca-certificates"
+      become: yes
       copy:
        src: /tmp/cacert.der
        dest: /usr/local/share/ca-certificates/BurpSuiteCA.der
        owner: root
        group: root
        mode: 0644
-      become: true
-      become_method: sudo
 
     - name: Update Firefox policies
       template:
@@ -731,7 +733,7 @@
     - name: Install Custom Font
       become: yes
       shell: |
-       wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip
+       wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -O /tmp/CascadiaCode.zip
        unzip -o "/tmp/CascadiaCode.zip" -d "/usr/share/fonts/"
 
     - name: Ensure system is fully upgraded

@@ -5,7 +5,6 @@
     user: "{{ lookup('env', 'USER') }}"
     user_home: "/home/{{user}}"
     zsh_config: "{{ user_home }}/.zshrc"
-    zsh_custom: "{{ user_home }}/.oh-my-zsh/custom"
     docker_gpg_key_url: "https://download.docker.com/linux/debian/gpg"
     docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
     image_dir: "/opt/wallpapers/"
@@ -113,22 +112,15 @@
         url: https://github.com/ropnop/kerbrute/releases/latest/download/kerbrute_linux_amd64
         dest: /usr/local/bin/kerbrute
         mode: '0755'
-        
-    - name: Install oh-my-zsh
-      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-      args:
-        creates: "{{ user_home }}/.oh-my-zsh"
 
     - name: Install Zsh plugins
       become: yes
       git:
         repo: "{{ item.repo }}"
-        dest: "{{ zsh_custom }}/plugins/{{ item.name }}"
+        dest: "~/.zsh/{{ item.name }}"
       loop:
-        - { name: "zsh-syntax-highlighting", repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
         - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions" }
         - { name: "you-should-use", repo: "https://github.com/MichaelAquilina/zsh-you-should-use.git" }
-        - { name: "zsh-history-substring-search", repo: "https://github.com/zsh-users/zsh-history-substring-search" }
         - { name: "F-Sy-H", repo: "https://github.com/z-shell/F-Sy-H.git" }
 
     - name: Ensure Zsh is installed before changing default shell
@@ -148,145 +140,131 @@
       copy:
         dest: "{{ zsh_config }}"
         content: |
-          export ZSH="$HOME/.oh-my-zsh"
-
-          ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
+          # Aliases: ls
+          alias l='eza -1A --group-directories-first --color=always --git-ignore'
+          alias ls='l'
+          alias la='l -l --time-style="+%Y-%m-%d %H:%M" --no-permissions --octal-permissions'
+          alias tree='l --tree'
           
-          ZSH_THEME="bira"
-          
-          updatetheme() {
-            ZSH_THEMES=(bira dst clean sorin af-magic)
-            local NEW_THEME="${ZSH_THEMES[RANDOM % 5]}"
-            echo "Switching to random theme: $NEW_THEME"
-            sed -i'' -E "s/^ZSH_THEME=.*/ZSH_THEME=\"$NEW_THEME\"/" ~/.zshrc
-            exec zsh
+          # Man colors
+          man() {
+            GROFF_NO_SGR=1 \
+            LESS_TERMCAP_mb=$'\e[31m' \
+            LESS_TERMCAP_md=$'\e[34m' \
+            LESS_TERMCAP_me=$'\e[0m' \
+            LESS_TERMCAP_se=$'\e[0m' \
+            LESS_TERMCAP_so=$'\e[1;30m' \
+            LESS_TERMCAP_ue=$'\e[0m' \
+            LESS_TERMCAP_us=$'\e[35m' \
+            command man "$@"
           }
           
-          plugins=(
-              zsh-interactive-cd
-              zsh-autosuggestions
-              you-should-use
-              zsh-history-substring-search
-              F-Sy-H
-          )
+          # Prompt
+          PROMPT=$'%{\033[34m%} %2~ %{\033[0m%}'
+          PROMPT2=$'%{\033[33m%} ... %{\033[0m%}'
+          RPROMPT=$'%(0?..%(130?..%{\033[31m%}%?%{\033[0m%}))'
           
-          source $ZSH/oh-my-zsh.sh
+          # ZLE
+          KEYTIMEOUT=1  # 10ms for grouping escape sequences
+          WORDCHARS='-_:'
           
-          setopt autocd              # change directory just by typing its name
-          #setopt correct            # auto correct mistakes
-          setopt interactivecomments # allow comments in interactive mode
-          setopt magicequalsubst     # enable filename expansion for arguments of the form ‘anything=expression’
-          setopt nonomatch           # hide error message if there is no match for the pattern
-          setopt notify              # report the status of background jobs immediately
-          setopt numericglobsort     # sort filenames numerically when it makes sense
-          setopt promptsubst         # enable command substitution in prompt
+          setopt interactive_comments
           
-          # Allows terminal to recognize slashes as delimters
-          WORDCHARS=${WORDCHARS//\/}
+          # History
+          HISTFILE="$HOME/.zsh_history"
+          HISTSIZE=10000
+          SAVEHIST="$HISTSIZE"
           
-          PROMPT_EOL_MARK=""
+          setopt extended_history
+          setopt inc_append_history
+          setopt inc_append_history_time
+          setopt share_history
+          setopt hist_fcntl_lock
           
-          bindkey -e                                        # emacs key bindings
-          bindkey ' ' magic-space                           # do history expansion on space
-          bindkey '^U' backward-kill-line                   # ctrl + U
-          bindkey '^[[3;5~' kill-word                       # ctrl + Supr
-          bindkey '^[[3~' delete-char                       # delete
-          bindkey '^[[1;5C' forward-word                    # ctrl + ->
-          bindkey '^[[1;5D' backward-word                   # ctrl + <-
-          bindkey '^[[5~' beginning-of-buffer-or-history    # page up
-          bindkey '^[[6~' end-of-buffer-or-history          # page down
-          bindkey '^[[H' beginning-of-line                  # home
-          bindkey '^[[F' end-of-line                        # end
-          bindkey '^[[Z' undo                               # shift + tab undo last action
+          setopt hist_ignore_dups
+          setopt hist_ignore_all_dups
+          setopt hist_save_no_dups
+          setopt hist_ignore_space
+          setopt hist_reduce_blanks
+          setopt hist_no_store  # ignore fc command
+          
+          HISTORY_IGNORE='(rm *|rf *)'
+          
+          # History: interactive search
+          __history() {
+            LBUFFER="$(fc -ln 0 | fzf --query="${LBUFFER}")"
+            zle redisplay
+          }
+          
+          zle -N __history
+          
+          # Completion
+          LISTMAX=10000  # do not show warning if there is too much items in completion
+          
+          setopt glob_dots  # include dotfiles into completion by default
+          setopt hash_cmds  # hash command locations
+          setopt list_packed
           
           autoload -Uz compinit
-          compinit -d ~/.cache/zcompdump
-          zstyle ':completion:*:*:*:*:*' menu select
-          zstyle ':completion:*' auto-description 'specify: %d'
-          zstyle ':completion:*' completer _expand _complete
-          zstyle ':completion:*' format 'Completing %d'
-          zstyle ':completion:*' group-name ''
-          zstyle ':completion:*' list-colors ''
-          zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-          zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-          zstyle ':completion:*' rehash true
-          zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-          zstyle ':completion:*' use-compctl false
-          zstyle ':completion:*' verbose true
-          zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+          compinit -C  # -C disables security checks on dump file
           
-          HISTFILE=/home/$USER/.zsh_history
+          # _complete is base completer
+          # _approximate will fix completion if there is no matches
+          # _extensions will complete glob patters with extensions
+          zstyle ':completion:*' completer _extensions _complete _approximate
           
-          HISTSIZE=200000
-          SAVEHIST=200000
+          zstyle ':completion:*' menu select  # menu with selection
+          zstyle ':completion:*' increment yes
+          zstyle ':completion:*' verbose yes
+          zstyle ':completion:*' squeeze-slashes yes  # replace // with /
           
-          setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
-          setopt hist_ignore_dups       # ignore duplicated commands history list
-          setopt hist_ignore_space      # ignore commands that start with space
-          setopt hist_verify            # show command with history expansion to user before running it
-          #setopt share_history         # share command history data
+          zstyle ':completion:*' file-sort modification  # show recently used files first
+          zstyle ':completion:*' list-dirs-first yes
+          zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"  # colored files and directories, blue selection box
+          zstyle ':completion:*' ignored-patterns '.git'
           
-          # force zsh to show the complete history
-          alias history="fc -l 1"
-          
-          TIMEFMT=$'\nreal\t%E\nuser\t%U\nsys\t%S\ncpu\t%P'
+          zstyle ':completion:*' rehash false  # improves performance
+          zstyle ':completion:*' use-cache true
           
           
-          precmd() {
-              # Print the previously configured title
-              print -Pnr -- "$TERM_TITLE"
+          # Keyboard
+          unsetopt flow_control  # disable ^S / ^Q
           
-              # Print a new line before the prompt, but only if it is not the first line
-              if [ "$NEWLINE_BEFORE_PROMPT" = yes ]; then
-                  if [ -z "$_NEW_LINE_BEFORE_PROMPT" ]; then
-                      _NEW_LINE_BEFORE_PROMPT=1
-                  else
-                      print ""
-                  fi
-              fi
+          bindkey -e  # Zsh default keybindings are vim, because EDITOR is set to vim, use emacs ones
+          
+          bindkey '^I' complete-word  # Tab, complete instead of expand-and-complete
+          bindkey '^[[3~' delete-char  # Delete
+          bindkey '^[[Z' reverse-menu-complete  # Shift+Tab
+          bindkey '^[[1;5D' backward-word  # Control-Left
+          bindkey '^[[1;5C' forward-word  # Control-Right
+          
+          bindkey '^R' __history
+          
+          # Line editor
+          autoload -Uz edit-command-line
+          zle -N edit-command-line
+          bindkey '^S' edit-command-line
+          
+          # Super Ctrl-Z
+          fg-ctrl-z () {
+            fg 2> /dev/null
           }
+          zle -N fg-ctrl-z
+          bindkey '^Z' fg-ctrl-z
           
-          if [ -x /usr/bin/dircolors ]; then
-              test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-              export LS_COLORS="$LS_COLORS:ow=30;44:" # fix ls color for folders with 777 permissions
+          # Plugin: autosuggestions
+          source ~/.zsh/zsh-autosuggestions.zsh
           
-              alias dir='dir --color=auto'
-              #alias vdir='vdir --color=auto'
+          ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#606090'
+          ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+          ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=40
           
-              alias grep='grep --color=auto'
-              alias fgrep='fgrep --color=auto'
-              alias egrep='egrep --color=auto'
-              alias diff='diff --color=auto'
-              alias ip='ip --color=auto'
-          
-              export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
-              export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
-              export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
-              export LESS_TERMCAP_so=$'\E[01;33m'    # begin reverse video
-              export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
-              export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
-              export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
-          
-              # Take advantage of $LS_COLORS for completion as well
-              zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-              zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
-          fi
-          
-          
-          # Set default editor to Vscode
-          EDITOR='code'
-          
-          # Aliases for exa (a modern replacement for 'ls')
-          alias ls='exa -a --group-directories-first -h -l -g --icons'
-          alias lst='exa -a -T -L=1 --group-directories-first -h -l -g --icons'
-          alias lstt='exa -a -T -L=2 --group-directories-first -h -l -g --icons'
-          alias lsh='exa -a -d .* --group-directories-first -h -l -g --icons'
-          # Alias for 'batcat' (a syntax-highlighting replacement for 'cat')
-          alias bat='batcat'
+          # Plugin: syntax highlighting
+          source ~/.zsh/F-Sy-H.plugin.zsh
           
           # Alias to update background
           alias updatebg='/home/yoda/.updatewallpaper.sh'
-          exa -a --group-directories-first -h -l -g --icons
+          
           # Alias for running AutoRecon (with sudo) and preserving the $PATH
           alias autorecon='sudo env "PATH=$PATH" autorecon --dirbuster.tool dirsearch'
           
@@ -321,13 +299,7 @@
           - Alt + j        : Resize pane down (Alt + j)
           "'
           
-          # Start a Python HTTP server on port 9000
-          alias pws='python3 -m http.server 9000'
-          
-          # Set up a tunneling interface using ligolo
-          alias lgu='sudo ip tuntap add user yoda mode tun ligolo && sudo ip link set ligolo up'
-          
-          # Add local bin directory to the system PATH
+           # Add local bin directory to the system PATH
           export PATH=$PATH:/home/yoda/.local/bin        
           
           # Auto Tmux Logging
@@ -335,8 +307,8 @@
             export TMUX_PANE_LOGGING=1
           
             # Get timestamps
-            DATE_FOLDER=$(date +%d-%b-%Y)              
-            TIME_FOLDER=$(date +%Hh%Mm)             
+            DATE_FOLDER=$(date +%d-%b-%Y)    
+            TIME_FOLDER=$(date +%Hh%Mm)   
           
             # Set log root with improved naming
             LOG_ROOT="$HOME/TmuxLogs/$DATE_FOLDER/$TIME_FOLDER"
@@ -376,20 +348,12 @@
           bind -n C-p next-window
           bind -n C-o previous-window
           
-          #bind -n C- kill-pane
-          
           bind -n C-h select-pane -L
           bind -n C-l select-pane -R
           bind -n C-k select-pane -U
           bind -n C-j select-pane -D
           
-          bind -n M-h resize-pane -L 2
-          bind -n M-l resize-pane -R 2
-          bind -n M-k resize-pane -U 2
-          bind -n M-j resize-pane -D 2
-          
-          
-          # Move window to the right
+             # Move window to the right
           bind-key -n M-Right swap-window -t +1
           
           # Move window to the left
@@ -397,27 +361,34 @@
           
           bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
           
-          setw -g mode-keys vi
+          # Options
+          set -sg terminal-overrides ",*:RGB"  # true color support
+          set -g escape-time 0  # disable delays on escape sequences
+          set -g mouse on
+          set -g renumber-windows on  # keep numbering sequential
+          set -g repeat-time 1000  # increase "prefix-free" window
           
-          set-option -sa terminal-overrides ",xterm*:Tc"
           
-          setw -g mouse on
+          # Options: start indexes from 1
+          set -g base-index 1
+          set -g pane-base-index 1
           
-          set -g status-position top
+          # Theme: borders
+          set -g pane-border-lines simple
+          set -g pane-border-style fg=black,bright
+          set -g pane-active-border-style fg=magenta
           
-          set -s escape-time 0
+          # Theme: status
+          set -g status-style bg=default,fg=black,bright
+          set -g status-left ""
+          set -g status-right "#[fg=black,bright]#S"
           
-          set -g history-limit 100000
           
-          set -g display-time 4000
-          
-          set -g status-interval 1
-          
-          set -g default-terminal "xterm-256color"
-          
-          set -g focus-events on
-          
-          setw -g aggressive-resize on
+          # Theme: status (windows)
+          set -g window-status-format " #W "
+          set -g window-status-current-format " #W "
+          set -g window-status-current-style "#{?window_zoomed_flag,bg=yellow,bg=magenta,nobold}"
+          set -g window-status-bell-style "bg=red,nobold"
           
           set -g @plugin 'tmux-plugins/tpm'
           set -g @plugin 'tmux-plugins/tmux-yank'
@@ -427,8 +398,6 @@
           set -g @plugin 'tmux-plugins/tmux-continuum'
           set -g @plugin 'tmux-plugins/tmux-open'
           set -g @plugin 'tmux-plugins/tmux-sessionist'
-          
-          set -g @plugin "arcticicestudio/nord-tmux"
              
           run '~/.tmux/plugins/tpm/tpm'
 

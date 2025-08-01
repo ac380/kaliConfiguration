@@ -151,7 +151,6 @@
         mode: '0755'
         
     - name: Install oh-my-zsh
-      become: yes
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
       args:
         creates: "{{ user_home }}/.oh-my-zsh"

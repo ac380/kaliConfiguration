@@ -12,25 +12,14 @@ Clone the repository
 git clone https://github.com/ac380/kaliConfiguration.git /tmp/kaliConfiguration
 ```
 
-## For Gnome
-Everything should work as expected, just make sure you have Gnome already installed and XFCE fully removed.
-
-```
-sudo apt install -y kali-desktop-gnome
-sudo apt purge --autoremove --allow-remove-essential kali-desktop-xfce
-
-Reboot
-
-git clone https://github.com/ac380/kaliConfiguration.git /tmp/kaliConfiguration
-sudo ansible-playbook /tmp/kaliConfiguration/configGnome.yaml
-```
-
 ## For XFCE
 Run the config.yaml  
 ```
 sudo ansible-playbook /tmp/kaliConfiguration/config.yaml
-OR
+
 ansible-playbook /tmp/kaliConfiguration/configNew.yaml -K
+
+ansible-playbook /tmp/kaliConfiguration/configMinimal.yaml -K
 ```
 
 ### Information

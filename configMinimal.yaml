@@ -1,0 +1,434 @@
+---
+- name: Configure the Kali Machine
+  hosts: localhost
+  vars:
+    user: "{{ lookup('env', 'USER') }}"
+    user_home: "/home/{{user}}"
+    zsh_config: "{{ user_home }}/.zshrc"
+    docker_gpg_key_url: "https://download.docker.com/linux/debian/gpg"
+    docker_repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable"
+    image_dir: "/opt/wallpapers/"
+    burpsuite_extras_dir: "/usr/local/lib/BurpSuite"
+    burpsuite_extras_jars:
+      jruby:
+        jar: jruby-complete.jar
+        url: https://repo1.maven.org/maven2/org/jruby/jruby-complete/9.4.0.0/jruby-complete-9.4.0.0.jar
+        checksum: sha256:e6817cf528976a50a054910f006ee34df07c4580c8a2a4c8c8d61cda0238a108
+      jython:
+        jar: jython-standalone.jar
+        url: https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.3/jython-standalone-2.7.3.jar
+        checksum: sha256:da7f3d829b148bcfa86b059dc964e3a8556fedb021096c8db07e30c66faab9b4
+    FirefoxPlugins:
+      - "foxyproxy-standard"
+      - "wappalyzer"
+      
+  tasks:
+    - name: Remove conflicting vscode.sources file if exists
+      become: yes
+      file:
+        path: /etc/apt/sources.list.d/vscode.sources
+        state: absent
+        
+    - name: Update apt cache
+      become: yes
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Add VS Code GPG key
+      become: yes
+      shell: |
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /usr/share/keyrings/packages.microsoft.gpg
+      args:
+        creates: /usr/share/keyrings/packages.microsoft.gpg
+
+    - name: Add VS Code repository
+      become: yes
+      shell: |
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list
+      args:
+        creates: /etc/apt/sources.list.d/vscode.list
+
+    - name: Install Visual Studio Code
+      become: yes
+      apt:
+        update_cache: yes
+        name: code
+        state: present
+
+    - name: Install all required apps
+      become: yes
+      apt:
+        name:  
+          - zsh
+          - curl
+          - dnsrecon
+          - enum4linux
+          - feroxbuster
+          - gobuster
+          - impacket-scripts
+          - nbtscan
+          - nikto
+          - nmap
+          - onesixtyone
+          - oscanner
+          - redis-tools
+          - smbclient
+          - smbmap
+          - sslscan
+          - whatweb
+          - wget
+          - chromium
+          - alacritty
+          - eza
+          - seclists
+          - ripgrep
+          - fd-find
+          - unzip
+          - fzf
+          - bat
+          - ansifilter
+          - john
+          - aircrack-ng
+          - hydra
+          - burpsuite
+          - metasploit-framework
+          - rubeus
+          - dirsearch
+          - sqlmap
+          - hashcat
+          - responder
+          - crackmapexec
+          - masscan
+          - autorecon
+          - exiftool
+          - ligolo-ng
+          - evil-winrm
+          - git
+          - pipx
+        state: present
+
+    - name: Install Zsh plugins
+      become: yes
+      git:
+        repo: "{{ item.repo }}"
+        dest: "~/.zsh/{{ item.name }}"
+      loop:
+        - { name: "zsh-autosuggestions", repo: "https://github.com/zsh-users/zsh-autosuggestions" }
+        - { name: "you-should-use", repo: "https://github.com/MichaelAquilina/zsh-you-should-use.git" }
+        - { name: "F-Sy-H", repo: "https://github.com/z-shell/F-Sy-H.git" }
+
+    - name: Ensure Zsh is installed before changing default shell
+      command: which zsh
+      register: zsh_check
+      changed_when: false
+
+    - name: Backup existing .zshrc if it exists
+      copy:
+        src: "{{ zsh_config }}"
+        dest: "{{ zsh_config }}.bak"
+        remote_src: yes
+        mode: '0644'
+      when: ansible.builtin.stat.path is defined and ansible.builtin.stat.path.exists
+
+    - name: Add custom Zsh configuration
+      copy:
+        dest: "{{ zsh_config }}"
+        content: |
+          # Aliases: ls
+          alias l='eza -1A --group-directories-first --color=always --git-ignore'
+          alias ls='l'
+          alias la='l -l --time-style="+%Y-%m-%d %H:%M" --no-permissions --octal-permissions'
+          alias tree='l --tree'
+          
+          # Man colors
+          man() {
+            GROFF_NO_SGR=1 \
+            LESS_TERMCAP_mb=$'\e[31m' \
+            LESS_TERMCAP_md=$'\e[34m' \
+            LESS_TERMCAP_me=$'\e[0m' \
+            LESS_TERMCAP_se=$'\e[0m' \
+            LESS_TERMCAP_so=$'\e[1;30m' \
+            LESS_TERMCAP_ue=$'\e[0m' \
+            LESS_TERMCAP_us=$'\e[35m' \
+            command man "$@"
+          }
+          
+          # Prompt
+          PROMPT=$'%{\033[34m%} %2~ %{\033[0m%}'
+          PROMPT2=$'%{\033[33m%} ... %{\033[0m%}'
+          RPROMPT=$'%(0?..%(130?..%{\033[31m%}%?%{\033[0m%}))'
+          
+          # ZLE
+          KEYTIMEOUT=1  # 10ms for grouping escape sequences
+          WORDCHARS='-_:'
+          
+          setopt interactive_comments
+          
+          # History
+          HISTFILE="$HOME/.zsh_history"
+          HISTSIZE=10000
+          SAVEHIST="$HISTSIZE"
+          
+          setopt extended_history
+          setopt inc_append_history
+          setopt inc_append_history_time
+          setopt share_history
+          setopt hist_fcntl_lock
+          
+          setopt hist_ignore_dups
+          setopt hist_ignore_all_dups
+          setopt hist_save_no_dups
+          setopt hist_ignore_space
+          setopt hist_reduce_blanks
+          setopt hist_no_store  # ignore fc command
+          
+          HISTORY_IGNORE='(rm *|rf *)'
+          
+          # History: interactive search
+          __history() {
+            LBUFFER="$(fc -ln 0 | fzf --query="${LBUFFER}")"
+            zle redisplay
+          }
+          
+          zle -N __history
+          
+          # Completion
+          LISTMAX=10000  # do not show warning if there is too much items in completion
+          
+          setopt glob_dots  # include dotfiles into completion by default
+          setopt hash_cmds  # hash command locations
+          setopt list_packed
+          
+          autoload -Uz compinit
+          compinit -C  # -C disables security checks on dump file
+          
+          # _complete is base completer
+          # _approximate will fix completion if there is no matches
+          # _extensions will complete glob patters with extensions
+          zstyle ':completion:*' completer _extensions _complete _approximate
+          
+          zstyle ':completion:*' menu select  # menu with selection
+          zstyle ':completion:*' increment yes
+          zstyle ':completion:*' verbose yes
+          zstyle ':completion:*' squeeze-slashes yes  # replace // with /
+          
+          zstyle ':completion:*' file-sort modification  # show recently used files first
+          zstyle ':completion:*' list-dirs-first yes
+          zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"  # colored files and directories, blue selection box
+          zstyle ':completion:*' ignored-patterns '.git'
+          
+          zstyle ':completion:*' rehash false  # improves performance
+          zstyle ':completion:*' use-cache true
+          
+          
+          # Keyboard
+          unsetopt flow_control  # disable ^S / ^Q
+          
+          bindkey -e  # Zsh default keybindings are vim, because EDITOR is set to vim, use emacs ones
+          
+          bindkey '^I' complete-word  # Tab, complete instead of expand-and-complete
+          bindkey '^[[3~' delete-char  # Delete
+          bindkey '^[[Z' reverse-menu-complete  # Shift+Tab
+          bindkey '^[[1;5D' backward-word  # Control-Left
+          bindkey '^[[1;5C' forward-word  # Control-Right
+          
+          bindkey '^R' __history
+          
+          # Alias for running AutoRecon (with sudo) and preserving the $PATH
+          alias autorecon='sudo env "PATH=$PATH" autorecon --dirbuster.tool dirsearch'
+          
+          # URL decode function using Python3
+          alias urldecode='python3 -c "import sys, urllib.parse as ul; \
+              print(ul.unquote_plus(sys.argv[1]))"'
+          
+          # URL encode function using Python3
+          alias urlencode='python3 -c "import sys, urllib.parse as ul; \
+              print (ul.quote_plus(sys.argv[1]))"'
+      
+    # Install Docker
+    - name: Install Docker GPG key
+      become: yes
+      get_url:
+        url: "{{ docker_gpg_key_url }}"
+        dest: /etc/apt/keyrings/docker.gpg
+
+    - name: Add Docker repository
+      become: yes
+      lineinfile:
+        dest: /etc/apt/sources.list.d/docker.list
+        line: "{{ docker_repo }}"
+        create: yes
+
+    - name: Install Docker packages
+      become: yes
+      apt:
+        update_cache: yes
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Start Docker service
+      become: yes
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+
+    - name: Add user to docker group
+      become: yes
+      user:
+        name: "{{ user }}"
+        groups: docker
+        append: yes
+
+    - name: Create Engagement directory
+      file:
+        path: "{{ user_home }}/Engagement"
+        state: directory
+        mode: '0755'
+        
+    - name: Create Engagement Binaries directory
+      file:
+        path: "{{ user_home }}/Engagement/Binaries"
+        state: directory
+        mode: '0755'
+
+    - name: Create Staging Binaries directory
+      file:
+        path: "{{ user_home }}/Engagement/Staging"
+        state: directory
+        mode: '0755'
+
+    - name: Install updog via pipx
+      command: pipx install updog
+      
+    - name: Install Penelope via pipx
+      command: pipx install git+https://github.com/brightio/penelope
+
+    - name: Download tools to Binaries folder
+      get_url:
+        url: "{{ item }}"
+        dest: "{{ user_home }}/Engagement/Binaries"
+        mode: '0755'
+      loop:
+        - https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
+
+
+    - name: Download tools to Staging folder
+      get_url:
+        url: "{{ item }}"
+        dest: "{{ user_home }}/Engagement/Staging"
+        mode: '0755'
+      loop:
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas_linux_amd64
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas.sh 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas_fat.sh 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASany_ofs.exe 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEASx64.exe 
+        - https://github.com/peass-ng/PEASS-ng/releases/latest/download/winPEAS.bat 
+        - https://github.com/itm4n/PrintSpoofer/releases/download/v1.0/PrintSpoofer64.exe
+        - https://github.com/antonioCoco/RoguePotato/releases/download/1.0/RoguePotato.zip
+        - https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_agent_0.8.2_linux_amd64.tar.gz
+        - https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_agent_0.8.2_windows_amd64.zip
+        - https://github.com/gentilkiwi/mimikatz/releases/latest/download/mimikatz_trunk.zip
+        - https://github.com/jpillora/chisel/releases/download/v1.10.1/chisel_1.10.1_linux_amd64.deb
+        - https://github.com/jpillora/chisel/releases/download/v1.10.1/chisel_1.10.1_windows_amd64.gz
+
+    - name: Ensure BurpSuite extras directory exists
+      become: yes
+      file:
+        path: "{{ burpsuite_extras_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Download BurpSuite extra JARs
+      become: yes
+      get_url:
+        url: "{{ item.value.url }}"
+        dest: "{{ burpsuite_extras_dir }}/{{ item.value.jar }}"
+        checksum: "{{ item.value.checksum }}"
+      loop: "{{ burpsuite_extras_jars | dict2items }}"
+
+    - name: Find burp jar file
+      become: yes
+      find:
+        paths: /
+        patterns: "burp*.jar"
+        recurse: yes
+      register: burp_jar_files
+
+    - name: Get latest burp jar path
+      become: yes
+      set_fact:
+        burp_jar: "{{ burp_jar_files.files | sort(attribute='path') | last }}"
+
+    - name: Run BurpSuite headlessly with timeout
+      become: yes
+      shell: |
+        /bin/bash -c "timeout 45 java -Djava.awt.headless=true -jar {{ burp_jar.path }} < <(echo y) &"
+      args:
+        executable: /bin/bash
+      async: 60
+      poll: 0
+
+    - name: Wait for BurpSuite to be ready
+      wait_for:
+        port: 8080
+        delay: 10
+        timeout: 30
+
+    - name: Download BurpSuite certificate
+      get_url:
+        url: http://localhost:8080/cert
+        dest: /tmp/cacert.der
+
+    - name: "Copying CA Certificate to /usr/local/share/ca-certificates"
+      become: yes
+      copy:
+       src: /tmp/cacert.der
+       dest: /usr/local/share/ca-certificates/BurpSuiteCA.der
+       owner: root
+       group: root
+       mode: 0644
+
+    - name: Update Firefox policies
+      template:
+        src: /tmp/kaliConfiguration/files/policies.json.j2
+        dest: "/usr/share/firefox-esr/distribution/policies.json"
+      become: true
+      become_method: sudo
+
+    - name: Install Firefox extensions
+      shell: >
+        firefox --headless --install-addon "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"
+      loop: "{{ FirefoxPlugins }}"
+      async: 30  
+      poll: 0   
+      ignore_errors: true
+
+    - name: Swap panels
+      shell: |
+        xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
+
+    - name: Ensure system is fully upgraded
+      become: yes
+      apt:
+        upgrade: full
+
+    # Clean up apt cache
+    - name: Clean up unused packages and cache
+      become: yes
+      apt:
+        autoremove: yes
+        clean: yes
+        
+    - name: Display post-installation reminders
+      debug:
+        msg:
+          - "POST-INSTALLATION STEPS:"
+          - "1. Run xfconf-query -c xfwm4 -p /general/show_dock_shadow -s false"
+          - "2. Reboot"
+      when: true

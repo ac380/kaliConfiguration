@@ -139,6 +139,7 @@
         mode: '0755'
 
     - name: Clone Statistically Likely Usernames
+      become: yes
       git:
         repo: https://github.com/insidetrust/statistically-likely-usernames.git
         dest: /usr/share/wordlists/statistically-likely-usernames
@@ -150,12 +151,13 @@
         mode: '0755'
         
     - name: Install oh-my-zsh
-      become_user: "{{ user }}"
+      become: yes
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
       args:
         creates: "{{ user_home }}/.oh-my-zsh"
 
     - name: Install Zsh plugins
+      become: yes
       git:
         repo: "{{ item.repo }}"
         dest: "{{ zsh_custom }}/plugins/{{ item.name }}"
@@ -695,7 +697,7 @@
     - name: Install Penelope via pipx
       command: pipx install git+https://github.com/brightio/penelope
 
-    - name: Download tools to /usr/local/bin/
+    - name: Download tools to Binaries folder
       get_url:
         url: "{{ item }}"
         dest: "{{ user_home }}/Engagement/Binaries"
@@ -826,6 +828,7 @@
         xfce4-panel-profiles load /tmp/kaliConfiguration/files/newPanel.tar.bz2
         
     - name: Ensure system is fully upgraded
+      become: yes
       apt:
         upgrade: full
 

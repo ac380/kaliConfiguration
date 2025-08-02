@@ -106,6 +106,286 @@
           - git
           - pipx
         state: present
+
+    - name: Add custom Zsh configuration
+      copy:
+        dest: "{{ zsh_config }}"
+        content: |
+              alias ls='ls --color=auto'
+              alias dir='dir --color=auto'
+              #alias vdir='vdir --color=auto'
+          
+              alias grep='grep --color=auto'
+              alias fgrep='fgrep --color=auto'
+              alias egrep='egrep --color=auto'
+              alias diff='diff --color=auto'
+              alias ip='ip --color=auto'
+          
+              export LESS_TERMCAP_mb=$'\E[1;31m'     # begin blink
+              export LESS_TERMCAP_md=$'\E[1;36m'     # begin bold
+              export LESS_TERMCAP_me=$'\E[0m'        # reset bold/blink
+              export LESS_TERMCAP_so=$'\E[01;33m'    # begin reverse video
+              export LESS_TERMCAP_se=$'\E[0m'        # reset reverse video
+              export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
+              export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
+              
+          # Set default editor to Vscode
+          EDITOR='code'
+          
+          # Replace ls with exa
+          alias ls='exa --group-directories-first --color=always'
+          alias ll='exa -lh --group-directories-first --color=always'
+          alias la='exa -la --group-directories-first --color=always'
+          alias lt='exa -laT --group-directories-first --color=always'  # Tree view
+          alias lsg='exa --git --long'  # Git-aware view
+          
+          # Alias for 'batcat' (a syntax-highlighting replacement for 'cat')
+          alias bat='batcat'
+          
+          # Alias for running AutoRecon (with sudo) and preserving the $PATH
+          alias autorecon='sudo env "PATH=$PATH" autorecon --dirbuster.tool dirsearch'
+          
+          # URL decode function using Python3
+          alias urldecode='python3 -c "import sys, urllib.parse as ul; \
+              print(ul.unquote_plus(sys.argv[1]))"'
+          
+          # URL encode function using Python3
+          alias urlencode='python3 -c "import sys, urllib.parse as ul; \
+              print (ul.quote_plus(sys.argv[1]))"'
+
+          # Shows Tmux shortcuts
+          alias tmuxshortcuts='echo "
+          Important tmux Shortcuts:
+          ===========================
+          Prefix: Ctrl + Space
+
+          - Ctrl + n       : Create a new window
+          - Ctrl + p       : Switch to the next window
+          - Ctrl + o       : Switch to the previous window
+          - Alt + q        : Split window vertically (Alt + q)
+          - Alt + w        : Split window horizontally (Alt + w)
+          - Ctrl + h       : Move left between panes
+          - Ctrl + l       : Move right between panes
+          - Ctrl + k       : Move up between panes
+          - Ctrl + j       : Move down between panes
+          - Alt + Right    : Move window to the right (Alt + Right Arrow)
+          - Alt + Left     : Move window to the left (Alt + Left Arrow)
+          - Alt + h        : Resize pane left (Alt + h)
+          - Alt + l        : Resize pane right (Alt + l)
+          - Alt + k        : Resize pane up (Alt + k)
+          - Alt + j        : Resize pane down (Alt + j)
+          "'
+          
+          # Start a Python HTTP server on port 9000
+          alias pws='python3 -m http.server 9000'
+          
+          # Set up a tunneling interface using ligolo
+          alias lgu='sudo ip tuntap add user {{ user }} mode tun ligolo && sudo ip link set ligolo up'
+          
+          # Add local bin directory to the system PATH
+          export PATH=$PATH:/home/{{ user }}/.local/bin        
+          
+          # Auto Tmux Logging
+          if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
+            export TMUX_PANE_LOGGING=1
+          
+            # Get timestamps
+            DATE_FOLDER=$(date +%d-%b-%Y)              
+            TIME_FOLDER=$(date +%Hh%Mm)             
+          
+            # Set log root with improved naming
+            LOG_ROOT="$HOME/tmux_logs/$DATE_FOLDER/$TIME_FOLDER"
+          
+            # Create colored and normal subfolders
+            COLORED_LOGS="$LOG_ROOT/colored"
+            NORMAL_LOGS="$LOG_ROOT/normal"
+            mkdir -p "$COLORED_LOGS" "$NORMAL_LOGS"
+          
+            # Get session/window/pane info
+            SESSION=$(tmux display-message -p '#S')
+            WINDOW=$(tmux display-message -p '#I')
+            PANE=$(tmux display-message -p '#P')
+          
+            # Build log file names
+            LOG_PREFIX="${SESSION}_win${WINDOW}_pane${PANE}"
+            COLOR_LOG="$COLORED_LOGS/${LOG_PREFIX}.log"
+            NORMAL_LOG="$NORMAL_LOGS/${LOG_PREFIX}.log"
+          
+            # Log both colored and plain output
+            tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
+          fi
+
+    - name: Add custom Tmux configuration
+      copy:
+        dest: "{{ user_home }}/.tmux.conf"
+        content: |
+          set-option -g prefix C-Space
+          unbind-key C-b
+          bind-key C-Space send-prefix
+          
+          bind -n M-q split-window -v -c "#{pane_current_path}"
+          bind -n M-w split-window -h -c "#{pane_current_path}"
+          
+          bind -n C-n new-window -c "#{pane_current_path}"
+          
+          bind -n C-p next-window
+          bind -n C-o previous-window
+          
+          # Move window to the right
+          bind-key -n M-Right swap-window -t +1
+          
+          # Move window to the left
+          bind-key -n M-Left swap-window -t -1
+          
+          bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
+          
+          setw -g mode-keys vi
+          
+          set-option -sa terminal-overrides ",xterm*:Tc"
+          
+          setw -g mouse on
+          
+          set -g status-position top
+          
+          set -s escape-time 0
+          
+          set -g history-limit 100000
+          
+          set -g display-time 4000
+          
+          set -g status-interval 1
+          
+          set -g default-terminal "xterm-256color"
+          
+          set -g focus-events on
+          
+          setw -g aggressive-resize on
+          
+          set -g @plugin 'tmux-plugins/tpm'
+          set -g @plugin 'tmux-plugins/tmux-yank'
+          set -g @plugin 'tmux-plugins/tmux-sensible'
+          set -g @plugin 'tmux-plugins/tmux-logging'
+          set -g @plugin 'tmux-plugins/tmux-resurrect'
+          set -g @plugin 'tmux-plugins/tmux-continuum'
+          set -g @plugin 'tmux-plugins/tmux-open'
+          set -g @plugin 'tmux-plugins/tmux-sessionist'
+          
+          set -g @plugin "arcticicestudio/nord-tmux"
+             
+          run '~/.tmux/plugins/tpm/tpm'
+
+    - name: Add custom Alacritty configuration
+      copy:
+        dest: "/etc/xdg/alacritty/alacritty.toml"
+        content: |
+          [scrolling]
+          history = 100_000
+          
+          [window]
+          dynamic_padding = false
+          opacity = 1
+          title = "Alacritty"
+          
+            [window.class]
+            general = "Alacritty"
+            instance = "Alacritty"
+          
+            [window.padding]
+            x = 10
+            y = 10
+          
+          [font]
+          size = 13.5
+          
+            [font.bold]
+            style = "Bold"
+          
+            [font.bold_italic]
+            style = "Mono Bold"
+          
+            [font.italic]
+            style = "Mono Bold"
+          
+            [font.normal]
+          
+            [font.offset]
+            x = 0
+            y = 1
+          
+          [env]
+          TERM = "xterm-256color"
+          
+          [colors.primary]
+          background = "#2e3440"
+          foreground = "#d8dee9"
+          dim_foreground = "#a5abb6"
+          
+          [colors.cursor]
+          text = "#2e3440"
+          cursor = "#d8dee9"
+          
+          [colors.vi_mode_cursor]
+          text = "#2e3440"
+          cursor = "#d8dee9"
+          
+          [colors.selection]
+          text = "CellForeground"
+          background = "#4c566a"
+          
+          [colors.search.matches]
+          foreground = "CellBackground"
+          background = "#88c0d0"
+          
+          [colors.normal]
+          black = "#3b4252"
+          red = "#bf616a"
+          green = "#a3be8c"
+          yellow = "#ebcb8b"
+          blue = "#81a1c1"
+          magenta = "#b48ead"
+          cyan = "#88c0d0"
+          white = "#e5e9f0"
+          
+          [colors.bright]
+          black = "#4c566a"
+          red = "#bf616a"
+          green = "#a3be8c"
+          yellow = "#ebcb8b"
+          blue = "#81a1c1"
+          magenta = "#b48ead"
+          cyan = "#8fbcbb"
+          white = "#eceff4"
+          
+          [colors.dim]
+          black = "#373e4d"
+          red = "#94545d"
+          green = "#809575"
+          yellow = "#b29e75"
+          blue = "#68809a"
+          magenta = "#8c738c"
+          cyan = "#6d96a5"
+          white = "#aeb3bb"
+
+    - name: Ensure tmux plugin directory exists
+      file:
+        path: "{{ user_home }}/.tmux/plugins"
+        state: directory
+        mode: '0755'
+
+    - name: Clone TPM (Tmux Plugin Manager)
+      git:
+        repo: "https://github.com/tmux-plugins/tpm"
+        dest: "{{ user_home }}/.tmux/plugins/tpm"
+        version: master
+        update: no
+
+    - name: Ensure TPM directory is owned by the target user
+      file:
+        path: "{{ user_home }}/.tmux/plugins"
+        state: directory
+        recurse: yes
+        owner: "{{ user }}"
+        group: "{{ user }}"
       
     # Install Docker
     - name: Install Docker GPG key
@@ -286,7 +566,8 @@
       debug:
         msg:
           - "POST-INSTALLATION STEPS:"
-          - "1. xfconf-query -c xfwm4 -p /general/show_dock_shadow -s false"
-          - "2. xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2"
-          - "3. Reboot"
+          - "xfconf-query -c xfwm4 -p /general/show_dock_shadow -s false"
+          - "xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2"
+          - "Tmux Ctrl Space and I to launch TPM"
+          - "Reboot"
       when: true

@@ -78,7 +78,6 @@
           - whatweb
           - wget
           - chromium
-          - alacritty
           - eza
           - seclists
           - ripgrep
@@ -244,6 +243,118 @@
           # URL encode function using Python3
           alias urlencode='python3 -c "import sys, urllib.parse as ul; \
               print (ul.quote_plus(sys.argv[1]))"'
+              
+          # Auto Tmux Logging
+          if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
+            export TMUX_PANE_LOGGING=1
+          
+            # Get timestamps
+            DATE_FOLDER=$(date +%d-%b-%Y)    
+            TIME_FOLDER=$(date +%Hh%Mm)   
+          
+            # Set log root with improved naming
+            LOG_ROOT="$HOME/TmuxLogs/$DATE_FOLDER/$TIME_FOLDER"
+          
+            # Create colored and normal subfolders
+            COLORED_LOGS="$LOG_ROOT/colored"
+            NORMAL_LOGS="$LOG_ROOT/normal"
+            mkdir -p "$COLORED_LOGS" "$NORMAL_LOGS"
+          
+            # Get session/window/pane info
+            SESSION=$(tmux display-message -p '#S')
+            WINDOW=$(tmux display-message -p '#I')
+            PANE=$(tmux display-message -p '#P')
+          
+            # Build log file names
+            LOG_PREFIX="${SESSION}_win${WINDOW}_pane${PANE}"
+            COLOR_LOG="$COLORED_LOGS/${LOG_PREFIX}.log"
+            NORMAL_LOG="$NORMAL_LOGS/${LOG_PREFIX}.log"
+          
+            # Log both colored and plain output
+            tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
+          fi
+
+          # fzf keybindings and auto-completion
+          [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+          
+          # Set default fzf command to use ripgrep
+          export FZF_DEFAULT_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+          export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+          export FZF_DEFAULT_OPTS='--height 40% --layout=reverse --border'
+          
+          # Ctrl+R to search shell history with fzf
+          autoload -Uz history-search-end
+          zle -N history-search-end
+          bindkey '^R' fzf-history-widget
+
+    - name: Add custom Tmux configuration
+      copy:
+        dest: "{{ user_home }}/.tmux.conf"
+        content: |
+          set-option -g prefix C-Space
+          unbind-key C-b
+          bind-key C-Space send-prefix
+          
+          bind -n M-q split-window -v -c "#{pane_current_path}"
+          bind -n M-w split-window -h -c "#{pane_current_path}"
+          
+          bind -n C-n new-window -c "#{pane_current_path}"
+          
+          bind -n C-p next-window
+          bind -n C-o previous-window
+          
+          bind -n C-h select-pane -L
+          bind -n C-l select-pane -R
+          bind -n C-k select-pane -U
+          bind -n C-j select-pane -D
+          
+          # Move window to the right
+          bind-key -n M-Right swap-window -t +1
+          
+          # Move window to the left
+          bind-key -n M-Left swap-window -t -1
+          
+          bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
+          
+          # Options
+          set -sg terminal-overrides ",*:RGB"  # true color support
+          set -g escape-time 0  # disable delays on escape sequences
+          set -g mouse on
+          set -g renumber-windows on  # keep numbering sequential
+          set -g repeat-time 1000  # increase "prefix-free" window
+          
+          
+          # Options: start indexes from 1
+          set -g base-index 1
+          set -g pane-base-index 1
+          
+          # Theme: borders
+          set -g pane-border-lines simple
+          set -g pane-border-style fg=black,bright
+          set -g pane-active-border-style fg=magenta
+          
+          # Theme: status
+          set -g status-style bg=default,fg=black,bright
+          set -g status-left ""
+          set -g status-right "#[fg=black,bright]#S"
+          
+          
+          # Theme: status (windows)
+          set -g window-status-format " #W "
+          set -g window-status-current-format " #W "
+          set -g window-status-current-style "#{?window_zoomed_flag,bg=yellow,bg=magenta,nobold}"
+          set -g window-status-bell-style "bg=red,nobold"
+          
+          set -g @plugin 'tmux-plugins/tpm'
+          set -g @plugin 'tmux-plugins/tmux-yank'
+          set -g @plugin 'tmux-plugins/tmux-sensible'
+          set -g @plugin 'tmux-plugins/tmux-logging'
+          set -g @plugin 'tmux-plugins/tmux-resurrect'
+          set -g @plugin 'tmux-plugins/tmux-continuum'
+          set -g @plugin 'tmux-plugins/tmux-open'
+          set -g @plugin 'tmux-plugins/tmux-sessionist'
+             
+          run '~/.tmux/plugins/tpm/tpm'
       
     # Install Docker
     - name: Install Docker GPG key

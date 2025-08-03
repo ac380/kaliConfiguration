@@ -27,4 +27,5 @@ ansible-playbook /tmp/kaliConfiguration/configMinimal.yaml -K
 # To-do 
 - Optimize aliases and dot file, useful stuff on Chris Titus tool
 - Automate burp certificate properly (Should be working now)
-  
+- Remove all apps from screen
+- Add gruv backgrounds to minimal script

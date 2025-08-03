@@ -684,48 +684,6 @@
         checksum: "{{ item.value.checksum }}"
       loop: "{{ burpsuite_extras_jars | dict2items }}"
 
-    - name: Find burp jar file
-      become: yes
-      find:
-        paths: /
-        patterns: "burp*.jar"
-        recurse: yes
-      register: burp_jar_files
-
-    - name: Get latest burp jar path
-      become: yes
-      set_fact:
-        burp_jar: "{{ burp_jar_files.files | sort(attribute='path') | last }}"
-
-    - name: Run BurpSuite headlessly with timeout
-      become: yes
-      shell: |
-        /bin/bash -c "timeout 45 java -Djava.awt.headless=true -jar {{ burp_jar.path }} < <(echo y) &"
-      args:
-        executable: /bin/bash
-      async: 60
-      poll: 0
-
-    - name: Wait for BurpSuite to be ready
-      wait_for:
-        port: 8080
-        delay: 10
-        timeout: 30
-
-    - name: Download BurpSuite certificate
-      get_url:
-        url: http://localhost:8080/cert
-        dest: /tmp/cacert.der
-
-    - name: "Copying CA Certificate to /usr/local/share/ca-certificates"
-      become: yes
-      copy:
-       src: /tmp/cacert.der
-       dest: /usr/local/share/ca-certificates/BurpSuiteCA.der
-       owner: root
-       group: root
-       mode: 0644
-
     - name: Update Firefox policies
       template:
         src: /tmp/kaliConfiguration/files/policies.json.j2

@@ -13,12 +13,14 @@ git clone https://github.com/ac380/kaliConfiguration.git /tmp/kaliConfiguration
 ```
 
 ## For XFCE
-Run the config.yaml  
+Run one of the configs
 ```
 sudo ansible-playbook /tmp/kaliConfiguration/config.yaml
-
+```
+```
 ansible-playbook /tmp/kaliConfiguration/configNew.yaml -K
-
+```
+```
 ansible-playbook /tmp/kaliConfiguration/configMinimal.yaml -K
 ```
 

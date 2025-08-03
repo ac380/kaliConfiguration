@@ -129,91 +129,91 @@
               export LESS_TERMCAP_us=$'\E[1;32m'     # begin underline
               export LESS_TERMCAP_ue=$'\E[0m'        # reset underline
               
-          # Set default editor to Vscode
-          EDITOR='code'
-          
-          # Replace ls with exa
-          alias ls='exa --group-directories-first --color=always'
-          alias ll='exa -lh --group-directories-first --color=always'
-          alias la='exa -la --group-directories-first --color=always'
-          alias lt='exa -laT --group-directories-first --color=always'  # Tree view
-          alias lsg='exa --git --long'  # Git-aware view
-          
-          # Alias for 'batcat' (a syntax-highlighting replacement for 'cat')
-          alias bat='batcat'
-          
-          # Alias for running AutoRecon (with sudo) and preserving the $PATH
-          alias autorecon='sudo env "PATH=$PATH" autorecon --dirbuster.tool dirsearch'
-          
-          # URL decode function using Python3
-          alias urldecode='python3 -c "import sys, urllib.parse as ul; \
-              print(ul.unquote_plus(sys.argv[1]))"'
-          
-          # URL encode function using Python3
-          alias urlencode='python3 -c "import sys, urllib.parse as ul; \
-              print (ul.quote_plus(sys.argv[1]))"'
+              # Set default editor to Vscode
+              EDITOR='code'
+              
+              # Replace ls with exa
+              alias ls='exa --group-directories-first --color=always'
+              alias ll='exa -lh --group-directories-first --color=always'
+              alias la='exa -la --group-directories-first --color=always'
+              alias lt='exa -laT --group-directories-first --color=always'  # Tree view
+              alias lsg='exa --git --long'  # Git-aware view
+              
+              # Alias for 'batcat' (a syntax-highlighting replacement for 'cat')
+              alias bat='batcat'
+              
+              # Alias for running AutoRecon (with sudo) and preserving the $PATH
+              alias autorecon='sudo env "PATH=$PATH" autorecon --dirbuster.tool dirsearch'
+              
+              # URL decode function using Python3
+              alias urldecode='python3 -c "import sys, urllib.parse as ul; \
+                  print(ul.unquote_plus(sys.argv[1]))"'
+              
+              # URL encode function using Python3
+              alias urlencode='python3 -c "import sys, urllib.parse as ul; \
+                  print (ul.quote_plus(sys.argv[1]))"'
 
-          # Shows Tmux shortcuts
-          alias tmuxshortcuts='echo "
-          Important tmux Shortcuts:
-          ===========================
-          Prefix: Ctrl + Space
+              # Shows Tmux shortcuts
+              alias tmuxshortcuts='echo "
+              Important tmux Shortcuts:
+              ===========================
+              Prefix: Ctrl + Space
 
-          - Ctrl + n       : Create a new window
-          - Ctrl + p       : Switch to the next window
-          - Ctrl + o       : Switch to the previous window
-          - Alt + q        : Split window vertically (Alt + q)
-          - Alt + w        : Split window horizontally (Alt + w)
-          - Ctrl + h       : Move left between panes
-          - Ctrl + l       : Move right between panes
-          - Ctrl + k       : Move up between panes
-          - Ctrl + j       : Move down between panes
-          - Alt + Right    : Move window to the right (Alt + Right Arrow)
-          - Alt + Left     : Move window to the left (Alt + Left Arrow)
-          - Alt + h        : Resize pane left (Alt + h)
-          - Alt + l        : Resize pane right (Alt + l)
-          - Alt + k        : Resize pane up (Alt + k)
-          - Alt + j        : Resize pane down (Alt + j)
-          "'
-          
-          # Start a Python HTTP server on port 9000
-          alias pws='python3 -m http.server 9000'
-          
-          # Set up a tunneling interface using ligolo
-          alias lgu='sudo ip tuntap add user {{ user }} mode tun ligolo && sudo ip link set ligolo up'
-          
-          # Add local bin directory to the system PATH
-          export PATH=$PATH:/home/{{ user }}/.local/bin        
-          
-          # Auto Tmux Logging
-          if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
-            export TMUX_PANE_LOGGING=1
-          
-            # Get timestamps
-            DATE_FOLDER=$(date +%d-%b-%Y)              
-            TIME_FOLDER=$(date +%Hh%Mm)             
-          
-            # Set log root with improved naming
-            LOG_ROOT="$HOME/tmux_logs/$DATE_FOLDER/$TIME_FOLDER"
-          
-            # Create colored and normal subfolders
-            COLORED_LOGS="$LOG_ROOT/colored"
-            NORMAL_LOGS="$LOG_ROOT/normal"
-            mkdir -p "$COLORED_LOGS" "$NORMAL_LOGS"
-          
-            # Get session/window/pane info
-            SESSION=$(tmux display-message -p '#S')
-            WINDOW=$(tmux display-message -p '#I')
-            PANE=$(tmux display-message -p '#P')
-          
-            # Build log file names
-            LOG_PREFIX="${SESSION}_win${WINDOW}_pane${PANE}"
-            COLOR_LOG="$COLORED_LOGS/${LOG_PREFIX}.log"
-            NORMAL_LOG="$NORMAL_LOGS/${LOG_PREFIX}.log"
-          
-            # Log both colored and plain output
-            tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
-          fi
+              - Ctrl + n       : Create a new window
+              - Ctrl + p       : Switch to the next window
+              - Ctrl + o       : Switch to the previous window
+              - Alt + q        : Split window vertically (Alt + q)
+              - Alt + w        : Split window horizontally (Alt + w)
+              - Ctrl + h       : Move left between panes
+              - Ctrl + l       : Move right between panes
+              - Ctrl + k       : Move up between panes
+              - Ctrl + j       : Move down between panes
+              - Alt + Right    : Move window to the right (Alt + Right Arrow)
+              - Alt + Left     : Move window to the left (Alt + Left Arrow)
+              - Alt + h        : Resize pane left (Alt + h)
+              - Alt + l        : Resize pane right (Alt + l)
+              - Alt + k        : Resize pane up (Alt + k)
+              - Alt + j        : Resize pane down (Alt + j)
+              "'
+              
+              # Start a Python HTTP server on port 9000
+              alias pws='python3 -m http.server 9000'
+              
+              # Set up a tunneling interface using ligolo
+              alias lgu='sudo ip tuntap add user {{ user }} mode tun ligolo && sudo ip link set ligolo up'
+              
+              # Add local bin directory to the system PATH
+              export PATH=$PATH:/home/{{ user }}/.local/bin        
+              
+              # Auto Tmux Logging
+              if [ -n "$TMUX_PANE" ] && [ "$TMUX_PANE_LOGGING" != "1" ]; then
+                export TMUX_PANE_LOGGING=1
+              
+                # Get timestamps
+                DATE_FOLDER=$(date +%d-%b-%Y)              
+                TIME_FOLDER=$(date +%Hh%Mm)             
+              
+                # Set log root with improved naming
+                LOG_ROOT="$HOME/TmuxLogs/$DATE_FOLDER/$TIME_FOLDER"
+              
+                # Create colored and normal subfolders
+                COLORED_LOGS="$LOG_ROOT/colored"
+                NORMAL_LOGS="$LOG_ROOT/normal"
+                mkdir -p "$COLORED_LOGS" "$NORMAL_LOGS"
+              
+                # Get session/window/pane info
+                SESSION=$(tmux display-message -p '#S')
+                WINDOW=$(tmux display-message -p '#I')
+                PANE=$(tmux display-message -p '#P')
+              
+                # Build log file names
+                LOG_PREFIX="${SESSION}_win${WINDOW}_pane${PANE}"
+                COLOR_LOG="$COLORED_LOGS/${LOG_PREFIX}.log"
+                NORMAL_LOG="$NORMAL_LOGS/${LOG_PREFIX}.log"
+              
+                # Log both colored and plain output
+                tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
+              fi
 
     - name: Add custom Tmux configuration
       copy:

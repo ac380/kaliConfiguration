@@ -442,9 +442,9 @@
             # Log both colored and plain output
             tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
           fi
-          rdp() {
+          xrdp() {
               if [ $# -lt 3 ]; then
-                  echo "Usage: rdp <ip> <username> <password> [domain]"
+                  echo "Usage: xrdp <ip> <username> <password> [domain]"
                   return 1
               fi
           

@@ -442,6 +442,24 @@
             # Log both colored and plain output
             tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
           fi
+          rdp() {
+              if [ $# -lt 3 ]; then
+                  echo "Usage: rdp <ip> <username> <password> [domain]"
+                  return 1
+              fi
+          
+              local ip="$1"
+              local user="$2"
+              local pass="$3"
+              local domain="${4:-}"
+          
+              local domain_arg=""
+              if [ -n "$domain" ]; then
+                  domain_arg="/d:$domain"
+              fi
+          
+              xfreerdp3 /cert:ignore $domain_arg /u:"$user" /p:"$pass" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip"
+          }
           {% endraw %}
 
     - name: Add custom Tmux configuration

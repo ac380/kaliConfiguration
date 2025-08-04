@@ -716,6 +716,25 @@
       apt:
         autoremove: yes
         clean: yes
+
+    - name: Copy wallpapers to user wallpaper folder
+      copy:
+        src: /tmp/kaliConfiguration/wallpapers/gruv/
+        dest: "{{user_home}}/Pictures/"
+        mode: '0644'
+
+    - name: Set wallpaper on all monitors
+      community.general.xfconf:
+        channel: xfce4-desktop
+        property: "/backdrop/screen0/monitorVirtual1/workspace{{ item }}/last-image"
+        value: "{{user_home}}/Pictures/debian_grey_swirl.png"
+        value_type: string
+      loop:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
         
     - name: Display post-installation reminders
       debug:

@@ -723,6 +723,13 @@
         dest: "{{user_home}}/Pictures/"
         mode: '0644'
 
+    - name: Set lightdm greeter background
+      lineinfile:
+        path: /etc/lightdm/lightdm-gtk-greeter.conf
+        regexp: '^background='
+        line: 'background={{user_home}}/Pictures/debian_grey_swirl.png'
+      become: yes
+
     - name: Set wallpaper on all monitors
       community.general.xfconf:
         channel: xfce4-desktop

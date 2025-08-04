@@ -717,6 +717,13 @@
         autoremove: yes
         clean: yes
 
+    - name: Disable desktop icons (remove all icons from desktop)
+      community.general.xfconf:
+        channel: xfce4-desktop
+        property: /desktop-icons/style
+        value: 0
+        value_type: int
+
     - name: Copy wallpapers to user wallpaper folder
       copy:
         src: /tmp/kaliConfiguration/wallpapers/gruv/

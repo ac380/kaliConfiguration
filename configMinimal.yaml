@@ -691,8 +691,8 @@
       shell: >
         firefox --headless --install-addon "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"
       loop: "{{ FirefoxPlugins }}"
-      async: 30  
-      poll: 0   
+      async: 600
+      poll: 600
       ignore_errors: true
 
     - name: Remove shadows from panel

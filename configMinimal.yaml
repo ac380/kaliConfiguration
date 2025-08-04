@@ -563,20 +563,16 @@
         state: directory
         mode: '0755'
 
-    - name: Clone TPM (Tmux Plugin Manager)
-      git:
-        repo: "https://github.com/tmux-plugins/tpm"
-        dest: "{{ user_home }}/.tmux/plugins/tpm"
-        version: master
-        update: no
-
-    - name: Ensure TPM directory is owned by the target user
-      file:
-        path: "{{ user_home }}/.tmux/plugins"
-        state: directory
-        recurse: yes
-        owner: "{{ user }}"
-        group: "{{ user }}"
+    - name: Install TPM plugins
+      shell: |
+        # Ensure TPM is cloned
+        if [ ! -d ~/.tmux/plugins/tpm ]; then
+          git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+        fi
+        # Trigger TPM plugin install without manual keypress
+        ~/.tmux/plugins/tpm/bin/install_plugins
+      args:
+        executable: /bin/bash
       
     # Install Docker
     - name: Install Docker GPG key
@@ -724,7 +720,5 @@
     - name: Display post-installation reminders
       debug:
         msg:
-          - "POST-INSTALLATION STEPS:"
-          - "Tmux Ctrl Space and I to launch TPM"
           - "Reboot"
       when: true

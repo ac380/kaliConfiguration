@@ -699,6 +699,16 @@
       poll: 0   
       ignore_errors: true
 
+    - name: Remove Shadow
+      community.general.xfconf:
+      channel: xfwm4
+      property: /general/show_dock_shadow
+      value: false
+      value_type: bool
+
+    - name: Load xfce4 panel profile
+      command: xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
+
     - name: Ensure system is fully upgraded
       become: yes
       apt:
@@ -715,8 +725,6 @@
       debug:
         msg:
           - "POST-INSTALLATION STEPS:"
-          - "xfconf-query -c xfwm4 -p /general/show_dock_shadow -s false"
-          - "xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2"
           - "Tmux Ctrl Space and I to launch TPM"
           - "Reboot"
       when: true

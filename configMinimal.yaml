@@ -733,8 +733,8 @@
     - name: Set lightdm greeter background
       lineinfile:
         path: /etc/lightdm/lightdm-gtk-greeter.conf
-        regexp: '^background='
-        line: 'background={{user_home}}/Pictures/debian_grey_swirl.png'
+        regexp: '^background = '
+        line: 'background = {{user_home}}/Pictures/debian_grey_swirl.png'
       become: yes
 
     - name: Set wallpaper on all monitors

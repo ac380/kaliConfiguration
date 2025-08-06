@@ -25,6 +25,6 @@ ansible-playbook /tmp/kaliConfiguration/configMinimal.yaml -K
 ```
 
 ## Todo
-- Add ctrl+alt copying certain area in Tmux
+- Add pspy in staging
 - Add tmux bars notifying when needed
 - Add Proper workspace configuration

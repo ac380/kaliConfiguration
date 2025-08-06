@@ -24,3 +24,7 @@ ansible-playbook /tmp/kaliConfiguration/configNew.yaml -K
 ansible-playbook /tmp/kaliConfiguration/configMinimal.yaml -K
 ```
 
+## Todo
+- Add ctrl+alt copying certain area in Tmux
+- Add tmux bars notifying when needed
+- Add Proper workspace configuration

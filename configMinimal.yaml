@@ -405,6 +405,8 @@
           - Alt + l        : Resize pane right (Alt + l)
           - Alt + k        : Resize pane up (Alt + k)
           - Alt + j        : Resize pane down (Alt + j)
+          - Prefix + [     : Enter Copy Mode
+          - Ctrl + V       : If in copy mode, enters box select.
           "'
           
           # Start a Python HTTP server on port 9000

@@ -739,6 +739,12 @@
 
     - name: Disable desktop icons (remove all icons from desktop)
       community.general.xfconf:
+        channel: xfce4-keyboard-shortcuts
+        property: "/xfwm4/custom/<Alt>Delete"
+        state: absent
+
+    - name: Remove workspaces keybind delete.
+      community.general.xfconf:
         channel: xfce4-desktop
         property: /desktop-icons/style
         value: 0

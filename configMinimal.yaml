@@ -69,6 +69,8 @@
           - nbtscan
           - nikto
           - nmap
+          - naabu
+          - ffuf
           - onesixtyone
           - oscanner
           - redis-tools
@@ -373,8 +375,10 @@
           # Alias for 'batcat' (a syntax-highlighting replacement for 'cat')
           alias bat='batcat'
           
-          # Alias for running AutoRecon (with sudo) and preserving the $PATH
-          alias autorecon='sudo env "PATH=$PATH" autorecon --dirbuster.tool dirsearch'
+          ## Autorecon Scanning
+          alias autorecon='sudo env PATH=$PATH autorecon --dirbuster.wordlist "/usr/share/wordlists/dirb/common.txt" --only-scans-dir --no-port-dirs --dirbuster.recursive '
+          ## Naabu and Nmap Scanning
+          alias scan='sudo naabu -iv 4 -p - -nmap-cli "nmap -sV -A --script=all -oA nmapPortScan" -host '
           
           # URL decode function using Python3
           alias urldecode='python3 -c "import sys, urllib.parse as ul; \

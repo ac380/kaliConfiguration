@@ -23,9 +23,3 @@ ansible-playbook /tmp/kaliConfiguration/configNew.yaml -K
 ```
 ansible-playbook /tmp/kaliConfiguration/configMinimal.yaml -K
 ```
-
-## Todo
-- Add pspy in staging
-- Add tmux bars notifying when needed
-- Ensure tmux tabs dont sleep(?)
-- Add naabu, add naabu alias to scan all hosts properly

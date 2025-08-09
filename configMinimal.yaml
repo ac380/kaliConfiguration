@@ -69,7 +69,6 @@
           - nbtscan
           - nikto
           - nmap
-          - naabu
           - ffuf
           - onesixtyone
           - oscanner
@@ -377,8 +376,8 @@
           
           ## Autorecon Scanning
           alias autorecon='sudo env PATH=$PATH autorecon --dirbuster.wordlist "/usr/share/wordlists/dirb/common.txt" --only-scans-dir --no-port-dirs --dirbuster.recursive '
-          ## Naabu and Nmap Scanning
-          alias scan='sudo naabu -v -iv 4 -p -host '
+          ## Nmap Scanning
+          alias scan='nmap -p- -T4 -Pn -sVC -v'
           
           # URL decode function using Python3
           alias urldecode='python3 -c "import sys, urllib.parse as ul; \

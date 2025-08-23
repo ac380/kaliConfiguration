@@ -20,6 +20,7 @@
     FirefoxPlugins:
       - "foxyproxy-standard"
       - "wappalyzer"
+      - "dotgit"
       
   tasks:
     - name: Remove conflicting vscode.sources file if exists
@@ -106,6 +107,7 @@
           - evil-winrm
           - git
           - pipx
+          - freerdp3-x11
         state: present
 
     - name: Add custom Zsh configuration
@@ -746,6 +748,8 @@
         - https://github.com/jpillora/chisel/releases/download/v1.10.1/chisel_1.10.1_linux_amd64.deb
         - https://github.com/jpillora/chisel/releases/download/v1.10.1/chisel_1.10.1_windows_amd64.gz
         - https://github.com/DominicBreuker/pspy/releases/download/v1.2.1/pspy64
+        - https://raw.githubusercontent.com/uknowsec/SweetPotato/master/SweetPotato-Webshell-new/bin/Release/SweetPotato.exe
+        - https://github.com/SpecterOps/MSSQLHound/blob/main/MSSQLHound.ps1
 
     - name: Ensure BurpSuite extras directory exists
       become: yes
@@ -773,8 +777,8 @@
       shell: >
         firefox --headless --install-addon "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"
       loop: "{{ FirefoxPlugins }}"
-      async: 600
-      poll: 600
+      async: 300
+      poll: 0
       ignore_errors: true
 
     - name: Remove shadows from panel

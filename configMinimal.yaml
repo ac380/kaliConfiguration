@@ -469,6 +469,10 @@
           }
           {% endraw %}
 
+              # FZF Functionalities
+          source /usr/share/doc/fzf/examples/key-bindings.zsh
+          source /usr/share/doc/fzf/examples/completion.zsh
+
     - name: Add custom Tmux configuration
       copy:
         dest: "{{ user_home }}/.tmux.conf"
@@ -482,14 +486,13 @@
           
           bind -n C-n new-window -c "#{pane_current_path}"
           
-          bind -n C-p next-window
-          bind -n C-o previous-window
+            ##  Swaps to left and right tabs with Ctrl+Arrow
+          bind -n C-Left previous-window
+          bind -n C-Right next-window
           
-          # Move window to the right
-          bind-key -n M-Right swap-window -t +1
-          
-          # Move window to the left
-          bind-key -n M-Left swap-window -t -1
+            ## Moves windows to left and right with Ctrl+Space
+          bind Right swap-window -t +1
+          bind Left swap-window -t -1
           
           bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
           

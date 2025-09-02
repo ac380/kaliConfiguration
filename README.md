@@ -1,5 +1,5 @@
 # kaliConfiguration
-Contains all files and automations for the kali configuration
+Prepares a brand new Kali installation with all the tools and customizations needed for pentesting.
 
 ## Shortcuts
 Install Ansible  
@@ -12,14 +12,8 @@ Clone the repository
 git clone https://github.com/ac380/kaliConfiguration.git /tmp/kaliConfiguration
 ```
 
-## For XFCE
-Run one of the configs
+Run the config
+
 ```
-sudo ansible-playbook /tmp/kaliConfiguration/config.yaml
-```
-```
-ansible-playbook /tmp/kaliConfiguration/configNew.yaml -K
-```
-```
-ansible-playbook /tmp/kaliConfiguration/configMinimal.yaml -K
+ansible-playbook /tmp/kaliConfiguration/config.yaml -K
 ```

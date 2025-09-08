@@ -487,12 +487,8 @@
           bind -n C-n new-window -c "#{pane_current_path}"
           
             ##  Swaps to left and right tabs with Ctrl+Arrow
-          bind -n C-Left previous-window
-          bind -n C-Right next-window
-          
-            ## Moves windows to left and right with Ctrl+Space
-          bind Right swap-window -t +1
-          bind Left swap-window -t -1
+          bind Left previous-window
+          bind Right next-window
           
           bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
           

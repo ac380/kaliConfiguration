@@ -797,6 +797,9 @@
     - name: Install Penelope via pipx
       command: pipx install git+https://github.com/brightio/penelope
 
+    - name: Install Git Dumper via pipx
+      command: pipx install git-dumper
+      
     - name: Download tools to Binaries folder
       get_url:
         url: "{{ item }}"
@@ -831,6 +834,8 @@
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET2.exe
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET35.exe
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET4.exe
+        - https://github.com/antonioCoco/RunasCs/releases/download/v1.5/RunasCs.zip
+        - https://github.com/byronkg/SharpGPOAbuse/releases/download/1.0/SharpGPOAbuse.exe
 
     - name: Ensure BurpSuite extras directory exists
       become: yes

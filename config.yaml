@@ -413,6 +413,26 @@
           - Prefix + [     : Enter Copy Mode
           - Ctrl + V       : If in copy mode, enters box select.
           "'
+
+          alias fzfshortcuts='echo "
+          Important fzf Shortcuts:
+          ===========================
+          Ctrl-R          : fuzzy reverse search (history)
+          Ctrl-T          : fuzzy file search (insert filename)
+          cat file | fzf  : fuzzy content search
+          cmd ** + tab    : fuzzy autocomplete
+          "'
+          
+          alias terminalhortcuts='echo "
+          Important terminal Shortcuts:
+          ===========================
+          Ctrl-a          : line start
+          Ctrl-e          : line end
+          Ctrl-u          : Delete to start of line
+          Ctrl-k          : Delete to end of line
+          Ctrl-w          : Delete previous word
+          Alt-d           :  Delete next word
+          "'
           
           # Start a Python HTTP server on port 9000
           alias pws='python3 -m http.server 9000'

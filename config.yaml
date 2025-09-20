@@ -548,11 +548,12 @@
             echo
             updog -p 80
           }
-          {% endraw %}
-
-              # FZF Functionalities
+         
+           # FZF Functionalities
           source /usr/share/doc/fzf/examples/key-bindings.zsh
           source /usr/share/doc/fzf/examples/completion.zsh
+          
+          {% endraw %}
 
     - name: Add custom Tmux configuration
       copy:

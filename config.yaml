@@ -865,6 +865,11 @@
       become: true
       become_method: sudo
 
+    - name: Update keyboard shortcuts
+      template:
+        src: /tmp/kaliConfiguration/files/xfce4-keyboard-shortcuts.xml
+        dest: "{{ user_home }}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-keyboard-shortcuts.xml "
+
     - name: Install Firefox extensions
       shell: >
         firefox --headless --install-addon "https://addons.mozilla.org/firefox/downloads/latest/{{ item }}/latest.xpi"

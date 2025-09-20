@@ -800,6 +800,9 @@
 
     - name: Install Git Dumper via pipx
       command: pipx install git-dumper
+
+    - name: Install ssh audit via pipx
+      command: pipx install ssh-audit
       
     - name: Download tools to Binaries folder
       get_url:

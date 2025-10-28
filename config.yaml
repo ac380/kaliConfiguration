@@ -425,7 +425,7 @@
           cmd ** + tab    : fuzzy autocomplete
           "'
           
-          alias terminalhortcuts='echo "
+          alias terminalshortcuts='echo "
           Important terminal Shortcuts:
           ===========================
           Ctrl-a          : line start

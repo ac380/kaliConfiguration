@@ -849,17 +849,17 @@
     
     - name: Clone Sharp Collection Repo
       ansible.builtin.git:
-      repo: 'https://github.com/Flangvik/SharpCollection.git'
-      dest: '{{ user_home }}/Engagement/Staging'
-      version: 'main'
-      update: yes
+        repo: 'https://github.com/Flangvik/SharpCollection.git'
+        dest: '{{ user_home }}/Engagement/Staging'
+        version: 'main'
+        update: yes
 
     - name: Clone Obfuscated Sharp Collection Repo
       ansible.builtin.git:
-      repo: 'https://github.com/Flangvik/ObfuscatedSharpCollection.git'
-      dest: '{{ user_home }}/Engagement/Staging'
-      version: 'main'
-      update: yes
+        repo: 'https://github.com/Flangvik/ObfuscatedSharpCollection.git'
+        dest: '{{ user_home }}/Engagement/Staging'
+        version: 'main'
+        update: yes
       
     - name: Ensure BurpSuite extras directory exists
       become: yes

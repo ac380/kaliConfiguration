@@ -816,6 +816,7 @@
         mode: '0755'
       loop:
         - https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
+        - https://github.com/0xb11a1/yetAnotherObfuscator/releases/download/1.1/yetAnotherObfuscator_v1.1.zip
 
 
     - name: Download tools to Staging folder
@@ -845,7 +846,21 @@
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET4.exe
         - https://github.com/antonioCoco/RunasCs/releases/download/v1.5/RunasCs.zip
         - https://github.com/byronkg/SharpGPOAbuse/releases/download/1.0/SharpGPOAbuse.exe
+    
+    - name: Clone Sharp Collection Repo
+      ansible.builtin.git:
+      repo: 'https://github.com/Flangvik/SharpCollection.git'
+      dest: '{{ user_home }}/Engagement/Staging'
+      version: 'main'
+      update: yes
 
+    - name: Clone Obfuscated Sharp Collection Repo
+      ansible.builtin.git:
+      repo: 'https://github.com/Flangvik/ObfuscatedSharpCollection.git'
+      dest: '{{ user_home }}/Engagement/Staging'
+      version: 'main'
+      update: yes
+      
     - name: Ensure BurpSuite extras directory exists
       become: yes
       file:

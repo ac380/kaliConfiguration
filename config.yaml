@@ -806,6 +806,9 @@
     - name: Install ssh audit via pipx
       command: pipx install ssh-audit
       
+    - name: Install creds via pipx
+      command: pipx install defaultcreds-cheat-sheet
+      
     - name: Download tools to Binaries folder
       get_url:
         url: "{{ item }}"

@@ -381,7 +381,7 @@
           alias autorecon='sudo env PATH=$PATH autorecon --dirbuster.wordlist /usr/share/seclists/Discovery/Web-Content/common.txt --only-scans-dir --no-port-dirs'
           
           ## Nmap Scanning
-          alias scan='sudo nmap -Pn -n -sS -p- -T4 -e tun0 --open'
+          alias scan='sudo nmap -Pn -v -n -sS -p- -T4 -e tun0 --open'
           
           # URL decode function using Python3
           alias urldecode='python3 -c "import sys, urllib.parse as ul; \

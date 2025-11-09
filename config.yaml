@@ -990,33 +990,6 @@
         property: /desktop-icons/style
         value: 0
         value_type: int
-
-    - name: Copy wallpapers to system-wide backgrounds folder
-      become: yes
-      copy:
-        src: /tmp/kaliConfiguration/wallpapers/gruv/
-        dest: /usr/share/backgrounds/gruv/
-        mode: '0644'
-    
-    - name: Set lightdm greeter background
-      become: yes
-      lineinfile:
-        path: /etc/lightdm/lightdm-gtk-greeter.conf
-        regexp: '^background = '
-        line: 'background = /usr/share/backgrounds/gruv/debian_grey_swirl.png'
-    
-    - name: Set wallpaper on all monitors and workspaces
-      community.general.xfconf:
-        channel: xfce4-desktop
-        property: "/backdrop/screen0/monitorVirtual1/workspace{{ item }}/last-image"
-        value: "/usr/share/backgrounds/gruv/debian_grey_swirl.png"
-        value_type: string
-      loop:
-        - 0
-        - 1
-        - 2
-        - 3
-        - 4
         
     - name: Display post-installation reminders
       debug:

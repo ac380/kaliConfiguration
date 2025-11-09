@@ -114,6 +114,7 @@
           - pipx
           - freerdp3-x11
           - kali-tools-windows-resources
+          - kali-community-wallpapers
         state: present
 
     - name: Add custom Zsh configuration

@@ -56,7 +56,7 @@
         name: code
         state: present
 
-      - name: Remove netexec package
+    - name: Remove netexec package
       become: yes
       apt:
         name: netexec

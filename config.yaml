@@ -910,14 +910,14 @@
     - name: Clone Sharp Collection Repo
       ansible.builtin.git:
         repo: 'https://github.com/Flangvik/SharpCollection.git'
-        dest: '{{ user_home }}/Engagement/Staging'
+        dest: '{{ user_home }}/Engagement/Staging/SharpCollection'
         version: 'master'
         update: yes
 
     - name: Clone Obfuscated Sharp Collection Repo
       ansible.builtin.git:
         repo: 'https://github.com/Flangvik/ObfuscatedSharpCollection.git'
-        dest: '{{ user_home }}/Engagement/Staging'
+        dest: '{{ user_home }}/Engagement/Staging/ObfuscatedSharpCollection'
         version: 'main'
         update: yes
       

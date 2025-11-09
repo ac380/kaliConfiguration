@@ -483,7 +483,7 @@
           fi
 
           # Alias to update background
-          alias updatebg='/home/{{user}}/.updatewallpaper.sh'
+          alias updatebg=/home/kali/updatewallpaper.sh
           
           xrdp() {
               local ip="" user="" pass="" domain="" ntlm_hash=""

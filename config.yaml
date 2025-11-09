@@ -99,16 +99,21 @@
           - sqlmap
           - hashcat
           - responder
-          - crackmapexec
           - masscan
           - autorecon
           - exiftool
           - ligolo-ng
-          - evil-winrm
+          - evil-winrm-py
           - git
           - pipx
           - freerdp3-x11
         state: present
+
+    - name: Remove netexec package
+      become: yes
+      apt:
+        name: netexec
+      state: absent
 
     - name: Add custom Zsh configuration
       copy:
@@ -414,6 +419,9 @@
           - Alt + j        : Resize pane down (Alt + j)
           - Prefix + [     : Enter Copy Mode
           - Ctrl + V       : If in copy mode, enters box select.
+          - /word          : If in copy mode, searches for word down.
+          - ?word          : If in copy mode, searches for word down.
+          - N or n         : If in copy mode, moves up or down.
           "'
 
           alias fzfshortcuts='echo "
@@ -433,7 +441,7 @@
           Ctrl-u          : Delete to start of line
           Ctrl-k          : Delete to end of line
           Ctrl-w          : Delete previous word
-          Alt-d           :  Delete next word
+          Alt-d           : Delete next word
           "'
           
           # Start a Python HTTP server on port 9000
@@ -808,6 +816,12 @@
       
     - name: Install creds via pipx
       command: pipx install defaultcreds-cheat-sheet
+
+    - name: Install impacket via pipx
+      command: pipx install impacket
+      
+    - name: Install nxc via pipx
+      command: pipx install git+https://github.com/Pennyw0rth/NetExec
       
     - name: Download tools to Binaries folder
       get_url:

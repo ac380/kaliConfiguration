@@ -56,6 +56,12 @@
         name: code
         state: present
 
+      - name: Remove netexec package
+      become: yes
+      apt:
+        name: netexec
+      state: absent
+
     - name: Install all required apps
       become: yes
       apt:
@@ -107,13 +113,8 @@
           - git
           - pipx
           - freerdp3-x11
+          - kali-tools-windows-resources
         state: present
-
-    - name: Remove netexec package
-      become: yes
-      apt:
-        name: netexec
-      state: absent
 
     - name: Add custom Zsh configuration
       copy:
@@ -518,7 +519,7 @@
                   fi
                   local domain_arg=""
                   [ -n "$domain" ] && domain_arg="/d:$domain"
-                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /p:"$pass" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip"
+                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /p:"$pass" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip +dynamic-resolution"
               fi
           
               # Otherwise use rdesktop: allow optional username only (no password/domain/hash)

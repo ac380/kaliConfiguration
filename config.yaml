@@ -582,8 +582,12 @@
           bind -n C-n new-window -c "#{pane_current_path}"
           
             ##  Swaps to left and right tabs with Ctrl+Arrow
-          bind Left previous-window
-          bind Right next-window
+          bind -n C-Left previous-window
+          bind -n C-Right next-window
+          
+            ## Swaps windows left and right with Alt+Arrow
+          bind -n M-Left swap-window -t -1
+          bind -n M-Right swap-window -t +1
           
           bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
           
@@ -606,9 +610,6 @@
           set -g default-terminal "xterm-256color"
           
           set -g focus-events on
-          
-          # 13) Automatically Sync With System Clipboard (tmux 3.2+)
-          set -g set-clipboard on
           
           setw -g aggressive-resize on
           

@@ -405,8 +405,6 @@
           Prefix: Ctrl + Space
 
           - Ctrl + n       : Create a new window
-          - Ctrl + p       : Switch to the next window
-          - Ctrl + o       : Switch to the previous window
           - Alt + q        : Split window vertically (Alt + q)
           - Alt + w        : Split window horizontally (Alt + w)
           - Ctrl + h       : Move left between panes
@@ -582,12 +580,12 @@
           bind -n C-n new-window -c "#{pane_current_path}"
           
             ##  Swaps to left and right tabs with Ctrl+Arrow
-          bind -n C-Left previous-window
-          bind -n C-Right next-window
+          bind C-Left previous-window
+          bind C-Right next-window
           
             ## Swaps windows left and right with Alt+Arrow
-          bind -n M-Left swap-window -t -1
-          bind -n M-Right swap-window -t +1
+          bind M-Left swap-window -t -1
+          bind M-Right swap-window -t +1
           
           bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
           

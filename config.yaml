@@ -511,7 +511,7 @@
                   fi
                   local domain_arg=""
                   [ -n "$domain" ] && domain_arg="/d:$domain"
-                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /pth:"$ntlm_hash" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip"
+                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /pth:"$ntlm_hash" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect +dynamic-resolution /title:"RDP - $user@$ip"
               fi
           
               if [ -n "$pass" ] || [ -n "$domain" ]; then
@@ -521,7 +521,7 @@
                   fi
                   local domain_arg=""
                   [ -n "$domain" ] && domain_arg="/d:$domain"
-                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /p:"$pass" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect /title:"RDP - $user@$ip +dynamic-resolution"
+                  exec xfreerdp3 /cert:ignore $domain_arg /u:"$user" /p:"$pass" /v:"$ip" /drive:/home/kali/Engagement/Staging,tmp +clipboard +auto-reconnect +dynamic-resolution /title:"RDP - $user@$ip +dynamic-resolution"
               fi
           
               # Otherwise use rdesktop: allow optional username only (no password/domain/hash)

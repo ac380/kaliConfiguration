@@ -126,6 +126,12 @@
       template:
         src: "/tmp/.tmux.conf"
         dest: "{{ user_home }}/.tmux.conf"
+
+    - name: Add custom Autorecon configuration
+      become: yes
+      template:
+        src: "/tmp/config.toml"
+        dest: "/root/.config/AutoRecon/config.toml"
         
     - name: Clone Alacritty Themes
       git:

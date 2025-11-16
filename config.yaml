@@ -129,6 +129,11 @@
           - freerdp3-dev
           - libssh-dev
           - libsmb2-dev
+          - gcc-mingw-w64-x86-64
+          - libclang-dev
+          - libkrb5-dev 
+          - libsasl2-modules-gssapi-mit 
+          - musl-tools
         state: present
 
     - name: Add custom Zsh configuration

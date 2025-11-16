@@ -261,7 +261,11 @@
       command: pipx install impacket
       
     - name: Install nxc via pipx
-      command: pipx install git+https://github.com/Pennyw0rth/NetExec
+      become: yes
+      command: pipx install git+https://github.com/Pennyw0rth/NetExec --global
+
+    - name: Install RustHound via Cargo
+      command: cargo install rusthound-ce
       
     - name: Download tools to Binaries folder
       get_url:

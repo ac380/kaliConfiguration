@@ -97,7 +97,6 @@
           - ansifilter
           - john
           - aircrack-ng
-          - hydra
           - burpsuite
           - metasploit-framework
           - rubeus

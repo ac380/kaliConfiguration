@@ -163,6 +163,11 @@
       template:
         src: "/tmp/alacritty.toml"
         dest: "{{user_home}}/.config/alacritty/alacritty.toml"
+
+    - name: Add custom .profile for paths.
+      template:
+        src: "/tmp/.profile"
+        dest: "{{user_home}}/.profile"
         
     - name: Ensure tmux plugin directory exists
       file:

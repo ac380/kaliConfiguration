@@ -115,6 +115,19 @@
           - freerdp3-x11
           - kali-tools-windows-resources
           - kali-community-wallpapers
+          - libsmbclient-dev
+          - freetds-dev
+          - libgcrypt20-dev
+          - libidn11-dev
+          - libpcre2-dev
+          - libpq-dev
+          - libapr1-dev
+          - libaprutil1-dev
+          - libsvn-dev
+          - libfbclient2
+          - libmysql++-dev
+          - freerdp3-dev
+          - libssh-dev
         state: present
 
     - name: Add custom Zsh configuration

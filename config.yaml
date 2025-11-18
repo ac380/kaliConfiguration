@@ -85,6 +85,7 @@
           - sslscan
           - whatweb
           - wget
+          - cargo
           - alacritty
           - chromium
           - eza
@@ -136,19 +137,19 @@
         state: present
 
     - name: Add custom Zsh configuration
-      template:
-        src: "/tmp/.zshrc"
+      copy:
+        src: "/tmp/kaliConfiguration/files/.zshrc"
         dest: "{{ user_home }}/.zshrc"
 
     - name: Add custom Tmux configuration
-      template:
-        src: "/tmp/.tmux.conf"
+      copy:
+        src: "/tmp/kaliConfiguration/files/.tmux.conf"
         dest: "{{ user_home }}/.tmux.conf"
 
     - name: Add custom Autorecon configuration
       become: yes
-      template:
-        src: "/tmp/config.toml"
+      copy:
+        src: "/tmp/kaliConfiguration/files/config.toml"
         dest: "/root/.config/AutoRecon/config.toml"
         
     - name: Clone Alacritty Themes
@@ -159,13 +160,13 @@
         update: no
     
     - name: Add custom Alacritty configuration
-      template:
-        src: "/tmp/alacritty.toml"
+      copy:
+        src: "/tmp/kaliConfiguration/files/alacritty.toml"
         dest: "{{user_home}}/.config/alacritty/alacritty.toml"
 
     - name: Add custom .profile for paths.
-      template:
-        src: "/tmp/.profile"
+      copy:
+        src: "/tmp/kaliConfiguration/files/.profile"
         dest: "{{user_home}}/.profile"
         
     - name: Ensure tmux plugin directory exists
@@ -186,8 +187,8 @@
         executable: /bin/bash
 
     - name: Create random wallpaper script
-      template:
-        src: "/tmp/.updatewallpaper.sh"
+      copy:
+        src: "/tmp/kaliConfiguration/files/.updatewallpaper.sh"
         dest: "/home/{{ user }}/.updatewallpaper.sh"
       
     # Install Docker

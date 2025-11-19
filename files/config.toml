@@ -15,4 +15,4 @@ password-wordlist = '/usr/share/wordlists/seclists/Passwords/xato-net-10-million
 community-strings = '/usr/share/wordlists/seclists/Discovery/SNMP/snmp-onesixtyone.txt'
 
 [dirbuster]
-wordlist = ['/usr/share/seclists/Discovery/Web-Content/combined_words.txt', '/usr/share/seclists/Discovery/Web-Content/api-endpoints-res.txt', '/usr/share/seclists/Discovery/Web-Content/combined_directories.txt']
+wordlist = ['/usr/share/seclists/Discovery/Web-Content/quickhits.txt','/usr/share/seclists/Discovery/Web-Content/combined_words.txt', '/usr/share/seclists/Discovery/Web-Content/api-endpoints-res.txt', '/usr/share/seclists/Discovery/Web-Content/combined_directories.txt', '/usr/share/seclists/Discovery/Web-Content/File-Extensions-Universal-SVNDigger-Project/all.txt']

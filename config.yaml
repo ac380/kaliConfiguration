@@ -363,11 +363,16 @@
         value: false
         value_type: bool
       
-    - name: Install TPM plugins
+    - name: Install Plank Configuration
       shell: |
         cat /tmp/kaliConfiguration/files/docks.ini | dconf load /net/launchpad/plank/docks/
       args:
         executable: /bin/bash
+
+    - name: Copy Plank Autostart
+      copy:
+        src: "/tmp/kaliConfiguration/files/Plank.desktop"
+        dest: "{{user_home}}/.config/autostart/Plank.desktop"
 
     - name: Ensure system is fully upgraded
       become: yes

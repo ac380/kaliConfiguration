@@ -353,15 +353,21 @@
       poll: 0
       ignore_errors: true
 
+    - name: Load xfce4 panel profile
+      command: xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
+
     - name: Remove shadows from panel
       community.general.xfconf:
         channel: xfwm4
         property: /general/show_dock_shadow
         value: false
         value_type: bool
-
-    - name: Load xfce4 panel profile
-      command: xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
+      
+    - name: Install TPM plugins
+      shell: |
+        cat /tmp/kaliConfiguration/files/docks.ini | dconf load /net/launchpad/plank/docks/
+      args:
+        executable: /bin/bash
 
     - name: Ensure system is fully upgraded
       become: yes

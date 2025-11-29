@@ -71,6 +71,7 @@
           - dnsrecon
           - enum4linux
           - feroxbuster
+          - plank
           - gobuster
           - impacket-scripts
           - nbtscan

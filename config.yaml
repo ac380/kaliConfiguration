@@ -376,6 +376,12 @@
       args:
         executable: /bin/bash
 
+     - name: Create Autostart directory
+      file:
+        path: "{{ user_home }}/.config/autostart"
+        state: directory
+        mode: '0755'
+        
     - name: Copy Plank Autostart
       copy:
         src: "/tmp/kaliConfiguration/files/Plank.desktop"

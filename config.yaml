@@ -147,6 +147,13 @@
         src: "/tmp/kaliConfiguration/files/.tmux.conf"
         dest: "{{ user_home }}/.tmux.conf"
 
+    - name: Create Autorecon directory
+      become: yes
+      file:
+        path: "/root/.config/AutoRecon/"
+        state: directory
+        mode: '0755'        
+
     - name: Add custom Autorecon configuration
       become: yes
       copy:

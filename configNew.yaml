@@ -301,13 +301,13 @@
         
     - name: Create Engagement Binaries directory
       file:
-        path: "/opt/Binaries"
+        path: "{{ user_home }}/Binaries"
         state: directory
         mode: '0755'
 
-    - name: Create Staging Binaries directory
+    - name: Create Staging directory
       file:
-        path: "/var/www/Staging"
+        path: "{{ user_home }}/Staging"
         state: directory
         mode: '0755'
 
@@ -339,7 +339,7 @@
     - name: Download tools to Binaries folder
       get_url:
         url: "{{ item }}"
-        dest: "/opt/Binaries"
+        dest: "{{ user_home }}/Binaries"
         mode: '0755'
       loop:
         - https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
@@ -348,7 +348,7 @@
     - name: Download tools to Staging folder
       get_url:
         url: "{{ item }}"
-        dest: "/var/www/Staging"
+        dest: "{{ user_home }}/Staging"
         mode: '0755'
       loop:
         - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas_linux_amd64
@@ -375,14 +375,14 @@
     - name: Clone Sharp Collection Repo
       ansible.builtin.git:
         repo: 'https://github.com/Flangvik/SharpCollection.git'
-        dest: '/var/www/Staging/SharpCollection'
+        dest: '{{ user_home }}/Staging/SharpCollection'
         version: 'master'
         update: yes
 
     - name: Clone Obfuscated Sharp Collection Repo
       ansible.builtin.git:
         repo: 'https://github.com/Flangvik/ObfuscatedSharpCollection.git'
-        dest: '/var/www/Staging/ObfuscatedSharpCollection'
+        dest: '{{ user_home }}/Staging/obfuscatedSharpCollection'
         version: 'main'
         update: yes
       

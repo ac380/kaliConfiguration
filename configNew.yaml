@@ -67,6 +67,7 @@
       apt:
         name:  
           - zsh
+          - xsel
           - curl
           - dnsrecon
           - enum4linux

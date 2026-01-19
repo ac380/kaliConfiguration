@@ -1,11 +1,26 @@
 # Configure regular AutoRecon options at the top of this file.
 
+# nmap-append = '-T3'
+# verbose = 1
+# max-scans = 30
+
+# Configure global options here.
+# [global]
+# username-wordlist = '/usr/share/seclists/Usernames/cirt-default-usernames.txt'
+
+# Configure plugin options here.
+# [dirbuster]
+# threads = 50
+# wordlist = [
+# 	'/usr/share/seclists/Discovery/Web-Content/common.txt',
+# 	'/usr/share/seclists/Discovery/Web-Content/big.txt',
+# 	'/usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt'
+# ]
+
 verbose = 1
 only-scans-dir = true
 no-port-dirs = true
 
-
-# Configure global options here.
 [global]
 username-wordlist = '/usr/share/wordlists/seclists/Usernames/cirt-default-usernames.txt'
 password-wordlist = '/usr/share/wordlists/seclists/Passwords/xato-net-10-million-passwords-100.txt'
@@ -15,4 +30,9 @@ password-wordlist = '/usr/share/wordlists/seclists/Passwords/xato-net-10-million
 community-strings = '/usr/share/wordlists/seclists/Discovery/SNMP/snmp-onesixtyone.txt'
 
 [dirbuster]
-wordlist = ['/usr/share/seclists/Discovery/Web-Content/quickhits.txt','/usr/share/seclists/Discovery/Web-Content/combined_words.txt', '/usr/share/seclists/Discovery/Web-Content/api-endpoints-res.txt', '/usr/share/seclists/Discovery/Web-Content/combined_directories.txt', '/usr/share/seclists/Discovery/Web-Content/File-Extensions-Universal-SVNDigger-Project/all.txt']
+wordlist = [
+ 	'/usr/share/seclists/Discovery/Web-Content/quickhits.txt',
+ 	'/usr/share/seclists/Discovery/Web-Content/combined_words.txt',
+ 	'/usr/share/seclists/Discovery/Web-Content/api-endpoints-res.txt',
+    '/usr/share/seclists/Discovery/Web-Content/File-Extensions-Universal-SVNDigger-Project/all.txt'
+]

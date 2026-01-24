@@ -265,7 +265,34 @@ alias bat='batcat'
 alias autorecon='sudo env PATH=$PATH autorecon'
 
 ## Nmap Scanning
-alias scan='sudo nmap -Pn -v -n -sS -p- -T4 -e tun0 --open'
+scan() {
+  local ip="$1"
+  if [[ -z "$ip" ]]; then
+    echo "Usage: scan <target>"
+    return 1
+  fi
+
+  # Full TCP port discovery (SYN) — requires sudo for best results
+  sudo nmap -p- -sS -T4 -oA "full_${ip}" "$ip" -v
+
+  # Build comma-separated port list from machine-readable gnmap
+  local ports
+  ports=$(awk '/open/{print $1}' "full_${ip}.gnmap" | cut -d'/' -f1 | paste -sd, -)
+
+  if [[ -z "$ports" ]]; then
+    echo "No open TCP ports found on $ip."
+    return 0
+  fi
+
+  # Service/enum scan on discovered ports
+  sudo nmap -sC -sV -p"$ports" -oA "service_${ip}" "$ip" -v
+
+  # Run autorecon if installed (non-blocking: run in background)
+  if command -v autorecon >/dev/null 2>&1; then
+    autorecon "$ip"
+  fi
+}
+
 
 # URL decode function using Python3
 alias urldecode='python3 -c "import sys, urllib.parse as ul; \
@@ -282,25 +309,19 @@ Important tmux Shortcuts:
 Prefix: Ctrl + Space
 
 - Ctrl + n       : Create a new window
-- Ctrl + p       : Switch to the next window
-- Ctrl + o       : Switch to the previous window
+- Prefix + W     : Select Window with FZF
+- Prefix + 0-9   : Select Window by Number
+- Prefix + n     : Move to next window
+- Prefix + p     : Move to previous window
 - Alt + q        : Split window vertically (Alt + q)
 - Alt + w        : Split window horizontally (Alt + w)
-- Ctrl + h       : Move left between panes
-- Ctrl + l       : Move right between panes
-- Ctrl + k       : Move up between panes
-- Ctrl + j       : Move down between panes
 - Alt + Right    : Move window to the right (Alt + Right Arrow)
 - Alt + Left     : Move window to the left (Alt + Left Arrow)
-- Alt + h        : Resize pane left (Alt + h)
-- Alt + l        : Resize pane right (Alt + l)
-- Alt + k        : Resize pane up (Alt + k)
-- Alt + j        : Resize pane down (Alt + j)
 - Prefix + [     : Enter Copy Mode
-- Ctrl + V       : If in copy mode, enters box select.
-- /word          : If in copy mode, searches for word down.
-- ?word          : If in copy mode, searches for word down.
-- N or n         : If in copy mode, moves up or down.
+- Ctrl + r       : If in copy mode, searches backwards (previous match)
+- Ctrl + s       : If in copy mode, searches forwards (next match)
+- Space + Arrow  : If in copy mode, selects everywhere.
+- Ctrl + Arrow   : If in copy mode, moves and scrolls
 "'
 
 alias fzfshortcuts='echo "
@@ -308,8 +329,12 @@ Important fzf Shortcuts:
 ===========================
 Ctrl-R          : fuzzy reverse search (history)
 Ctrl-T          : fuzzy file search (insert filename)
+Alt-C           : cd into selected directory (with previews)
 cat file | fzf  : fuzzy content search
 cmd ** + tab    : fuzzy autocomplete
+Ctrl-/          : toggle preview on/off
+Shift-Up        : scroll preview up
+Shift-Down      : scroll preview down
 "'
 
 alias terminalshortcuts='echo "
@@ -438,6 +463,15 @@ serve() {
   echo
   updog -p 80
 }
+
+export FZF_DEFAULT_OPTS="
+  --preview 'batcat --style=numbers --color=always {}'
+  --preview-window=hidden
+  --bind 'ctrl-/:toggle-preview,shift-up:preview-up,shift-down:preview-down'
+"
+
+# GRC Coloring
+[[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh
 
  # FZF Functionalities
 source /usr/share/doc/fzf/examples/key-bindings.zsh

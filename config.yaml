@@ -67,11 +67,12 @@
       apt:
         name:  
           - zsh
+          - xsel
           - curl
+          - grc
           - dnsrecon
           - enum4linux
           - feroxbuster
-          - plank
           - gobuster
           - impacket-scripts
           - nbtscan
@@ -87,7 +88,6 @@
           - whatweb
           - wget
           - cargo
-          - alacritty
           - chromium
           - eza
           - seclists
@@ -142,11 +142,76 @@
         src: "/tmp/kaliConfiguration/files/.zshrc"
         dest: "{{ user_home }}/.zshrc"
 
+    - name: Add custom Terminal configuration
+      copy:
+        src: "/tmp/kaliConfiguration/files/qterminal.ini"
+        dest: "{{ user_home }}/.config/qterminal.org/qterminal.ini"
+
     - name: Add custom Tmux configuration
       copy:
-        src: "/tmp/kaliConfiguration/files/.tmux.conf"
         dest: "{{ user_home }}/.tmux.conf"
-
+        content: |
+          set-option -g prefix C-Space
+          unbind-key C-b
+          bind-key C-Space send-prefix
+          
+          set -g @override_copy_command 'xsel -i --clipboard'
+          set -g @yank_selection_mouse 'clipboard'
+          set -g @yank_selection 'primary'
+          
+          bind -n M-q split-window -v -c "#{pane_current_path}"
+          bind -n M-w split-window -h -c "#{pane_current_path}"
+          
+          bind -n C-n new-window -c "#{pane_current_path}"
+          
+          bind-key r source-file ~/.tmux.conf \; display-message "~/.tmux.conf reloaded."
+          
+          set-environment -g TERM "tmux-256color"
+          set -g default-terminal "tmux-256color"
+          
+          set-option -g history-limit 5000
+          set-option -g status-position top
+          
+          set -as terminal-overrides ',*:Smulx=\E[4::%p1%dm' # undercurl support
+          set -as terminal-overrides ',*:Setulc=\E[58::2::%p1%{65536}%/%d::%p1%{256}%/%{255}%&%d::%p1%{255}%&%d%;m' # underscore colours - needs tmux-3.0
+          
+          # set the statusline color (default is transparent, color256)
+          set -g status-left-style bg=default,fg=colour207,bold
+          set -g status-style bg=default,fg=colour117,bold
+          set -g status-right-style bg=default,fg=colour102,bold
+          
+          set -g status-right "#T"
+          
+          # set pane border colors
+          set -g pane-border-style fg=colour238
+          set -g pane-active-border-style fg=colour161
+          
+          set -g mouse on
+          
+          # tpm plugin
+          set -g @plugin "tmux-plugins/tpm"
+          
+          # tmux plugins
+          set -g @plugin "christoomey/vim-tmux-navigator"
+          set -g @plugin 'tmux-plugins/tmux-yank'
+          set -g @plugin 'tmux-plugins/tmux-logging'
+          set -g @plugin "tmux-plugins/tmux-resurrect"
+          set -g @plugin "tmux-plugins/tmux-continuum"
+          set -g @plugin "omerxx/tmux-sessionx"
+          
+          # initialize tpm (keep at bottom of tmux.conf)
+          run "~/.tmux/plugins/tpm/tpm"
+          
+          # Automatically sync with system clipboard (tmux 3.2+)
+          set -g set-clipboard on
+          
+          # Force Emacs-style keys in copy-mode (optional)
+          setw -g mode-keys emacs
+          
+          # Copy-mode key bindings
+          bind -T copy-mode Space send-keys -X begin-selection
+          bind -T copy-mode Enter send-keys -X copy-pipe-and-cancel "xclip -selection clipboard -i"
+   
     - name: Create Autorecon directory
       become: yes
       file:
@@ -159,18 +224,6 @@
       copy:
         src: "/tmp/kaliConfiguration/files/config.toml"
         dest: "/root/.config/AutoRecon/config.toml"
-        
-    - name: Clone Alacritty Themes
-      git:
-        repo: "https://github.com/alacritty/alacritty-theme"
-        dest: "{{user_home}}/.config/alacritty/"
-        version: master
-        update: no
-    
-    - name: Add custom Alacritty configuration
-      copy:
-        src: "/tmp/kaliConfiguration/files/alacritty.toml"
-        dest: "{{user_home}}/.config/alacritty/alacritty.toml"
 
     - name: Add custom .profile for paths.
       copy:
@@ -245,18 +298,21 @@
         
     - name: Create Engagement Binaries directory
       file:
-        path: "{{ user_home }}/Engagement/Binaries"
+        path: "{{ user_home }}/Binaries"
         state: directory
         mode: '0755'
 
-    - name: Create Staging Binaries directory
+    - name: Create Staging directory
       file:
-        path: "{{ user_home }}/Engagement/Staging"
+        path: "{{ user_home }}/Staging"
         state: directory
         mode: '0755'
 
     - name: Install updog via pipx
       command: pipx install updog
+
+    - name: Install bloodyAD via pipx
+      command: pipx install bloodyAD
       
     - name: Install Penelope via pipx
       command: pipx install git+https://github.com/brightio/penelope
@@ -283,16 +339,42 @@
     - name: Download tools to Binaries folder
       get_url:
         url: "{{ item }}"
-        dest: "{{ user_home }}/Engagement/Binaries"
+        dest: "{{ user_home }}/Binaries"
         mode: '0755'
       loop:
         - https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
         - https://github.com/0xb11a1/yetAnotherObfuscator/releases/download/1.1/yetAnotherObfuscator_v1.1.zip
 
+    - name: Download LFI Wordlists to their folder
+      get_url:
+        url: "{{ item }}"
+        dest: "/usr/share/wordlists/seclists/Fuzzing/LFI"
+        mode: '0755'
+      loop:
+        - https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/file_inclusion_linux.txt
+        - https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/file_inclusion_windows.txt
+        - https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Linux
+        - https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Windows
+
+    - name: Download OneRuleToGetThemAll to Hashcat Rules
+      get_url:
+        url: "{{ item }}"
+        dest: "/usr/share/hashcat/rules"
+        mode: '0755'
+      loop:
+        - https://raw.githubusercontent.com/NotSoSecure/password_cracking_rules/refs/heads/master/OneRuleToRuleThemAll.rule
+
+    - name: Clone Username-Anarchy Repo
+      ansible.builtin.git:
+        repo: 'https://github.com/urbanadventurer/username-anarchy.git'
+        dest: '{{ user_home }}/Engagement/Binaries'
+        version: 'master'
+        update: yes
+
     - name: Download tools to Staging folder
       get_url:
         url: "{{ item }}"
-        dest: "{{ user_home }}/Engagement/Staging"
+        dest: "{{ user_home }}/Staging"
         mode: '0755'
       loop:
         - https://github.com/peass-ng/PEASS-ng/releases/latest/download/linpeas_linux_amd64
@@ -315,18 +397,29 @@
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET35.exe
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET4.exe
         - https://github.com/antonioCoco/RunasCs/releases/download/v1.5/RunasCs.zip
-    
+        - https://github.com/SpecterOps/SharpHound/releases/download/v2.9.0/SharpHound_v2.9.0_windows_x86.zip
+        - https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/refs/heads/master/Privesc/PowerUp.ps1
+        - https://github.com/int0x33/nc.exe/blob/master/nc.exe
+        - https://github.com/int0x33/nc.exe/blob/master/nc64.exe
+
+    - name: Clone Nishang Repo
+      ansible.builtin.git:
+        repo: 'https://github.com/samratashok/nishang.git'
+        dest: '{{ user_home }}/Engagement/Staging/Nishang'
+        version: 'master'
+        update: yes
+
     - name: Clone Sharp Collection Repo
       ansible.builtin.git:
         repo: 'https://github.com/Flangvik/SharpCollection.git'
-        dest: '{{ user_home }}/Engagement/Staging/SharpCollection'
+        dest: '{{ user_home }}/Staging/SharpCollection'
         version: 'master'
         update: yes
 
     - name: Clone Obfuscated Sharp Collection Repo
       ansible.builtin.git:
         repo: 'https://github.com/Flangvik/ObfuscatedSharpCollection.git'
-        dest: '{{ user_home }}/Engagement/Staging/ObfuscatedSharpCollection'
+        dest: '{{ user_home }}/Staging/obfuscatedSharpCollection'
         version: 'main'
         update: yes
       
@@ -360,32 +453,11 @@
       poll: 0
       ignore_errors: true
 
-    - name: Load xfce4 panel profile
-      command: xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
-
-    - name: Remove shadows from panel
-      community.general.xfconf:
-        channel: xfwm4
-        property: /general/show_dock_shadow
-        value: false
-        value_type: bool
-      
-    - name: Install Plank Configuration
+    - name: Make username-anarchy executable
       shell: |
-        cat /tmp/kaliConfiguration/files/docks.ini | dconf load /net/launchpad/plank/docks/
+        ln -s ~/Binaries/username-anarchy/username-anarchy ~/.local/bin/username-anarchy
       args:
         executable: /bin/bash
-
-     - name: Create Autostart directory
-      file:
-        path: "{{ user_home }}/.config/autostart"
-        state: directory
-        mode: '0755'
-        
-    - name: Copy Plank Autostart
-      copy:
-        src: "/tmp/kaliConfiguration/files/Plank.desktop"
-        dest: "{{user_home}}/.config/autostart/Plank.desktop"
 
     - name: Ensure system is fully upgraded
       become: yes

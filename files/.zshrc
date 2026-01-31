@@ -266,33 +266,28 @@ alias autorecon='sudo env PATH=$PATH autorecon'
 
 ## Nmap Scanning
 scan() {
-  local ip="$1"
-  if [[ -z "$ip" ]]; then
-    echo "Usage: scan <target>"
-    return 1
-  fi
+    local ip="$1"
+    [[ -z "$ip" ]] && { echo "Usage: scan <target>"; return 1; }
 
-  # Full TCP port discovery (SYN) — requires sudo for best results
-  sudo nmap -p- -sS -T4 -oA "full_${ip}" "$ip" -v
+    sudo nmap -p- -sS -T4 -oG "full_${ip}.gnmap" "$ip" -v
 
-  # Build comma-separated port list from machine-readable gnmap
-  local ports
-  ports=$(awk '/open/{print $1}' "full_${ip}.gnmap" | cut -d'/' -f1 | paste -sd, -)
+    local ports
+    ports=$(grep "open/tcp" "full_${ip}.gnmap" \
+            | awk -F '/' '{print $1}' \
+            | tr '\n' ',' \
+            | sed 's/,$//')
 
-  if [[ -z "$ports" ]]; then
-    echo "No open TCP ports found on $ip."
-    return 0
-  fi
+    echo "DEBUG: ports='$ports'"
 
-  # Service/enum scan on discovered ports
-  sudo nmap -sC -sV -p"$ports" -oA "service_${ip}" "$ip" -v
+    if [[ -z "$ports" ]]; then
+        echo "No open TCP ports found on $ip."
+        return 0
+    fi
 
-  # Run autorecon if installed (non-blocking: run in background)
-  if command -v autorecon >/dev/null 2>&1; then
-    autorecon "$ip"
-  fi
+    sudo nmap -sC -sV -p"$ports" -oA "service_${ip}" "$ip" -v
+
+    command -v autorecon >/dev/null 2>&1 && autorecon "$ip" &
 }
-
 
 # URL decode function using Python3
 alias urldecode='python3 -c "import sys, urllib.parse as ul; \

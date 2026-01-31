@@ -401,6 +401,10 @@
         - https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/refs/heads/master/Privesc/PowerUp.ps1
         - https://github.com/int0x33/nc.exe/blob/master/nc.exe
         - https://github.com/int0x33/nc.exe/blob/master/nc64.exe
+        - https://github.com/stealthcopter/deepce/raw/main/deepce.sh
+        - https://github.com/liamg/traitor/releases/download/v0.0.14/traitor-amd64
+        - https://github.com/ohpe/juicy-potato/releases/download/v0.1/JuicyPotato.exe
+
 
     - name: Clone Nishang Repo
       ansible.builtin.git:
@@ -483,6 +487,14 @@
         property: /desktop-icons/style
         value: 0
         value_type: int
+
+    - name: Deploy bookmarks JSON
+      copy:
+        src: /tmp/kaliConfiguration/files/Bookmarks
+        dest: /home/{{ user }}/.config/chromium/Default/Bookmarks
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0644"     
         
     - name: Display post-installation reminders
       debug:

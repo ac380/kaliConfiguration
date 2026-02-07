@@ -346,6 +346,7 @@
         - https://github.com/0xb11a1/yetAnotherObfuscator/releases/download/1.1/yetAnotherObfuscator_v1.1.zip
 
     - name: Download LFI Wordlists to their folder
+      become: yes
       get_url:
         url: "{{ item }}"
         dest: "/usr/share/wordlists/seclists/Fuzzing/LFI"
@@ -357,6 +358,7 @@
         - https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Windows
 
     - name: Download OneRuleToGetThemAll to Hashcat Rules
+      become: yes
       get_url:
         url: "{{ item }}"
         dest: "/usr/share/hashcat/rules"

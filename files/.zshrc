@@ -264,30 +264,8 @@ alias bat='batcat'
 ## Autorecon Scanning
 alias autorecon='sudo env PATH=$PATH autorecon'
 
-## Nmap Scanning
-scan() {
-    local ip="$1"
-    [[ -z "$ip" ]] && { echo "Usage: scan <target>"; return 1; }
-
-    sudo nmap -p- -sS -T4 -oG "full_${ip}.gnmap" "$ip" -v
-
-    local ports
-    ports=$(grep "open/tcp" "full_${ip}.gnmap" \
-            | awk -F '/' '{print $1}' \
-            | tr '\n' ',' \
-            | sed 's/,$//')
-
-    echo "DEBUG: ports='$ports'"
-
-    if [[ -z "$ports" ]]; then
-        echo "No open TCP ports found on $ip."
-        return 0
-    fi
-
-    sudo nmap -sC -sV -p"$ports" -oA "service_${ip}" "$ip" -v
-
-    command -v autorecon >/dev/null 2>&1 && autorecon "$ip" &
-}
+## Default NMAP Scan
+alias scan='sudo nmap -sVC -p- -oN nmap -v -T5'
 
 # URL decode function using Python3
 alias urldecode='python3 -c "import sys, urllib.parse as ul; \

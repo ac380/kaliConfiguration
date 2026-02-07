@@ -459,11 +459,27 @@
       poll: 0
       ignore_errors: true
 
-    - name: Make username-anarchy executable
+    - name: Check and create username-anarchy symlink if it doesn't exist
       shell: |
-        ln -s ~/Binaries/username-anarchy/username-anarchy ~/.local/bin/username-anarchy
+        if [ ! -L ~/.local/bin/username-anarchy ]; then
+          ln -s ~/Binaries/username-anarchy/username-anarchy ~/.local/bin/username-anarchy
+        fi
       args:
         executable: /bin/bash
+
+    - name: Ensure Chrome directory exists
+      file:
+        path: "/home/{{ user }}/.config/chromium/Default/Bookmarks"
+        state: directory
+        mode: '0755'
+
+    - name: Deploy bookmarks JSON
+      copy:
+        src: /tmp/kaliConfiguration/files/Bookmarks
+        dest: /home/{{ user }}/.config/chromium/Default/Bookmarks
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0644"     
 
     - name: Ensure system is fully upgraded
       become: yes
@@ -489,14 +505,6 @@
         property: /desktop-icons/style
         value: 0
         value_type: int
-
-    - name: Deploy bookmarks JSON
-      copy:
-        src: /tmp/kaliConfiguration/files/Bookmarks
-        dest: /home/{{ user }}/.config/chromium/Default/Bookmarks
-        owner: "{{ user }}"
-        group: "{{ user }}"
-        mode: "0644"     
         
     - name: Display post-installation reminders
       debug:

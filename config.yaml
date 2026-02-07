@@ -369,7 +369,7 @@
     - name: Clone Username-Anarchy Repo
       ansible.builtin.git:
         repo: 'https://github.com/urbanadventurer/username-anarchy.git'
-        dest: '{{ user_home }}/Engagement/Binaries'
+        dest: '{{ user_home }}/Binaries'
         version: 'master'
         update: yes
 
@@ -462,7 +462,7 @@
     - name: Check and create username-anarchy symlink if it doesn't exist
       shell: |
         if [ ! -L ~/.local/bin/username-anarchy ]; then
-          ln -s ~/Binaries/username-anarchy/username-anarchy ~/.local/bin/username-anarchy
+          ln -s ~/Binaries/Username-Anarchy/username-anarchy ~/.local/bin/username-anarchy
         fi
       args:
         executable: /bin/bash

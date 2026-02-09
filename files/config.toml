@@ -20,6 +20,8 @@
 verbose = 1
 only-scans-dir = true
 no-port-dirs = true
+max-scans = 2
+max-port-scans = 2
 
 [global]
 username-wordlist = '/usr/share/wordlists/seclists/Usernames/cirt-default-usernames.txt'

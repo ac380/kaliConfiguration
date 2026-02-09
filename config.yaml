@@ -406,7 +406,9 @@
         - https://github.com/stealthcopter/deepce/raw/main/deepce.sh
         - https://github.com/liamg/traitor/releases/download/v0.0.14/traitor-amd64
         - https://github.com/ohpe/juicy-potato/releases/download/v0.1/JuicyPotato.exe
-
+        - https://github.com/stealthcopter/deepce/raw/main/deepce.sh
+        - https://github.com/diego-treitos/linux-smart-enumeration/releases/latest/download/lse.sh
+        - https://raw.githubusercontent.com/jondonas/linux-exploit-suggester-2/refs/heads/master/linux-exploit-suggester-2.pl
 
     - name: Clone Nishang Repo
       ansible.builtin.git:

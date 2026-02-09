@@ -265,7 +265,36 @@ alias bat='batcat'
 alias autorecon='sudo env PATH=$PATH autorecon'
 
 ## Default NMAP Scan
-alias scan='sudo nmap -sVC -p- -oN nmap -v -T5'
+alias scan='sudo nmap -sV -sC -p- -Pn -vv -oN nmap.txt'
+
+## Parses the nmap.txt for easy Obsidian paste
+parsenmap() {
+  local file="${1:-nmap}"
+  if [[ ! -r "$file" ]]; then
+    echo "File not found or unreadable: $file" >&2
+    return 1
+  fi
+
+  awk '
+  /^[0-9]+\/tcp/ && /open/ {
+    portnum = $1
+    sub(/\/tcp$/, "", portnum)
+
+    svc = ""; start = 0
+    for (i = 1; i <= NF; i++)
+      if ($i == "open") { svc = $(i+1); start = i+2; break }
+    if (svc == "") svc = "unknown"
+
+    ver = ""
+    for (j = start; j <= NF; j++)
+      ver = ver (ver ? " " : "") $j
+    if (ver == "") ver = "-"
+
+    svc_uc = toupper(svc)
+    printf "## TCP/%s %s %s\n", portnum, svc_uc, ver
+  }
+  ' "$file" | tee /dev/stderr | xsel --clipboard
+}
 
 # URL decode function using Python3
 alias urldecode='python3 -c "import sys, urllib.parse as ul; \

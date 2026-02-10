@@ -21,6 +21,8 @@
       - "foxyproxy-standard"
       - "wappalyzer"
       - "dotgit"
+      - "multi-account-containers"
+      - "pwnfox"
       
   tasks:
     - name: Remove conflicting vscode.sources file if exists

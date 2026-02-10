@@ -1,5 +1,5 @@
 {
-   "checksum": "bfdccb2937a7eae528c769b5d9e285f4",
+   "checksum": "4c71d243fc3f3571d4303982e2eb889d",
    "roots": {
       "bookmark_bar": {
          "children": [ {
@@ -12,7 +12,7 @@
             "url": "https://www.exploit-db.com/"
          }, {
             "date_added": "13414375950525265",
-            "date_last_used": "0",
+            "date_last_used": "13415212507875412",
             "guid": "5228143f-73c1-483a-a8b5-238e522697cf",
             "id": "15",
             "meta_info": {
@@ -23,7 +23,7 @@
             "url": "https://viperone.gitbook.io/pentest-everything/everything/everything-active-directory/ad-enumeration"
          }, {
             "date_added": "13414375955160573",
-            "date_last_used": "0",
+            "date_last_used": "13415212553715185",
             "guid": "0b1f9272-2f8d-4bf1-99d5-1e2e78abb063",
             "id": "16",
             "meta_info": {
@@ -34,7 +34,7 @@
             "url": "https://swisskyrepo.github.io/PayloadsAllTheThings/"
          }, {
             "date_added": "13414375958194327",
-            "date_last_used": "0",
+            "date_last_used": "13415212551744716",
             "guid": "0007ecbf-c673-497e-943a-f9177749190f",
             "id": "17",
             "meta_info": {
@@ -45,7 +45,7 @@
             "url": "https://swisskyrepo.github.io/InternalAllTheThings/"
          }, {
             "date_added": "13414375960234284",
-            "date_last_used": "0",
+            "date_last_used": "13415212550634391",
             "guid": "493e3da8-f238-4bdc-a951-e0930fe9fdb6",
             "id": "18",
             "meta_info": {
@@ -76,10 +76,32 @@
             "name": "orange-cyberdefense.github.io/ocd-mindmaps/img/mindmap_ad_dark_classic_2025.03.excalidraw.svg",
             "type": "url",
             "url": "https://orange-cyberdefense.github.io/ocd-mindmaps/img/mindmap_ad_dark_classic_2025.03.excalidraw.svg"
+         }, {
+            "date_added": "13415212532212062",
+            "date_last_used": "0",
+            "guid": "60ce0b20-e022-4fb5-895f-a2d73afd3df9",
+            "id": "22",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "HackTricks",
+            "type": "url",
+            "url": "https://book.hacktricks.wiki/en/index.html"
+         }, {
+            "date_added": "13415212566410463",
+            "date_last_used": "0",
+            "guid": "5866f413-371c-49a1-adbe-19e254782604",
+            "id": "23",
+            "meta_info": {
+               "power_bookmark_meta": ""
+            },
+            "name": "Weakpass",
+            "type": "url",
+            "url": "https://weakpass.com/"
          } ],
          "date_added": "13411950259395616",
          "date_last_used": "0",
-         "date_modified": "13414375965290400",
+         "date_modified": "13415212566410463",
          "guid": "0bc5d13f-2cba-5d74-951f-3f233fe6c908",
          "id": "1",
          "name": "Bookmarks bar",

@@ -483,17 +483,8 @@
         group: "{{ user }}"
         mode: "0644"     
 
-    - name: Ensure system is fully upgraded
-      become: yes
-      apt:
-        upgrade: full
-
-    # Clean up apt cache
-    - name: Clean up unused packages and cache
-      become: yes
-      apt:
-        autoremove: yes
-        clean: yes
+    - name: Load xfce4 panel profile
+      command: xfce4-panel-profiles load /tmp/kaliConfiguration/files/panel.tar.bz2
 
     - name: Disable desktop icons (remove all icons from desktop)
       community.general.xfconf:
@@ -507,6 +498,17 @@
         property: /desktop-icons/style
         value: 0
         value_type: int
+
+    - name: Ensure system is fully upgraded
+      become: yes
+      apt:
+        upgrade: full
+
+    - name: Clean up unused packages and cache
+      become: yes
+      apt:
+        autoremove: yes
+        clean: yes
         
     - name: Display post-installation reminders
       debug:

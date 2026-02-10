@@ -439,7 +439,15 @@
         dest: '{{ user_home }}/Staging/obfuscatedSharpCollection'
         version: 'main'
         update: yes
-      
+
+    - name: Copy Tools Recap txt file.
+      copy:
+        src: '/tmp/kaliConfiguration/files/binariesRecap.txt'
+        dest: '{{ user_home }}/Staging/binariesRecap.txt'
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: "0644"   
+        
     - name: Ensure BurpSuite extras directory exists
       become: yes
       file:
@@ -486,8 +494,8 @@
 
     - name: Deploy bookmarks JSON
       copy:
-        src: /tmp/kaliConfiguration/files/Bookmarks
-        dest: /home/{{ user }}/.config/chromium/Default/Bookmarks
+        src: '/tmp/kaliConfiguration/files/Bookmarks'
+        dest: '/home/{{ user }}/.config/chromium/Default/Bookmarks'
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: "0644"     

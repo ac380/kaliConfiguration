@@ -137,7 +137,14 @@
           - libkrb5-dev 
           - libsasl2-modules-gssapi-mit 
           - musl-tools
+          - golang-go
         state: present
+
+    - name: Install Shortscan
+      shell: |
+        go install github.com/bitquark/shortscan/cmd/shortscan@latest
+      args:
+        executable: /bin/bash
 
     - name: Add custom Zsh configuration
       copy:

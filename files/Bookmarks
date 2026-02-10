@@ -18,9 +18,9 @@
             "meta_info": {
                "power_bookmark_meta": ""
             },
-            "name": "Active Directory Enumeration | Pentest Everything",
+            "name": "Pentest Everything",
             "type": "url",
-            "url": "https://viperone.gitbook.io/pentest-everything/everything/everything-active-directory/ad-enumeration"
+            "url": "https://viperone.gitbook.io/pentest-everything"
          }, {
             "date_added": "13414375955160573",
             "date_last_used": "13415212553715185",

@@ -426,16 +426,16 @@
       args:
         executable: /bin/bash
 
-    - name: Ensure Chrome directory exists
+    - name: Ensure Firefox profile directory exists
       file:
-        path: "/home/{{ user }}/.config/chromium/Default"
+        path: "/home/{{ user }}/.mozilla/firefox"
         state: directory
         mode: '0755'
 
-    - name: Deploy bookmarks JSON
+    - name: Deploy Firefox bookmarks
       copy:
-        src: '/tmp/kaliConfiguration/files/Bookmarks'
-        dest: '/home/{{ user }}/.config/chromium/Default/Bookmarks'
+        src: '/tmp/kaliConfiguration/files/bookmarks.html'
+        dest: '/home/{{ user }}/.mozilla/firefox/bookmarks.html'
         owner: "{{ user }}"
         group: "{{ user }}"
         mode: "0644"     

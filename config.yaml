@@ -18,10 +18,8 @@
         url: https://repo1.maven.org/maven2/org/python/jython-standalone/2.7.3/jython-standalone-2.7.3.jar
         checksum: sha256:da7f3d829b148bcfa86b059dc964e3a8556fedb021096c8db07e30c66faab9b4
     FirefoxPlugins:
-      - "foxyproxy-standard"
       - "wappalyzer"
       - "dotgit"
-      - "multi-account-containers"
       - "pwnfox"
       
   tasks:
@@ -245,13 +243,15 @@
         state: directory
         mode: '0755'
 
+    - name: Clone TPM plugin
+      ansible.builtin.git:
+        repo: 'https://github.com/tmux-plugins/tpm'
+        dest: '{{ user_home }}/.tmux/plugins/tpm'
+        version: 'master'
+        update: yes
+
     - name: Install TPM plugins
       shell: |
-        # Ensure TPM is cloned
-        if [ ! -d ~/.tmux/plugins/tpm ]; then
-          git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-        fi
-        # Trigger TPM plugin install without manual keypress
         ~/.tmux/plugins/tpm/bin/install_plugins
       args:
         executable: /bin/bash
@@ -305,7 +305,7 @@
         state: directory
         mode: '0755'
         
-    - name: Create Engagement Binaries directory
+    - name: Create Binaries directory
       file:
         path: "{{ user_home }}/Binaries"
         state: directory
@@ -378,7 +378,7 @@
     - name: Clone Username-Anarchy Repo
       ansible.builtin.git:
         repo: 'https://github.com/urbanadventurer/username-anarchy.git'
-        dest: '{{ user_home }}/Binaries'
+        dest: '{{ user_home }}/Binaries/username-anarchy'
         version: 'master'
         update: yes
 
@@ -422,7 +422,7 @@
     - name: Clone Nishang Repo
       ansible.builtin.git:
         repo: 'https://github.com/samratashok/nishang.git'
-        dest: '{{ user_home }}/Engagement/Staging/Nishang'
+        dest: '{{ user_home }}/Staging/Nishang'
         version: 'master'
         update: yes
 
@@ -481,14 +481,14 @@
     - name: Check and create username-anarchy symlink if it doesn't exist
       shell: |
         if [ ! -L ~/.local/bin/username-anarchy ]; then
-          ln -s ~/Binaries/Username-Anarchy/username-anarchy ~/.local/bin/username-anarchy
+          ln -s ~/Binaries/username-anarchy/username-anarchy ~/.local/bin/username-anarchy
         fi
       args:
         executable: /bin/bash
 
     - name: Ensure Chrome directory exists
       file:
-        path: "/home/{{ user }}/.config/chromium/Default/Bookmarks"
+        path: "/home/{{ user }}/.config/chromium/Default"
         state: directory
         mode: '0755'
 

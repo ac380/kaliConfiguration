@@ -88,6 +88,8 @@
           - sslscan
           - whatweb
           - wget
+          - krbrelayx
+          - dnstool
           - cargo
           - chromium
           - eza
@@ -144,6 +146,46 @@
         go install github.com/bitquark/shortscan/cmd/shortscan@latest
       args:
         executable: /bin/bash
+
+    - name: Install ldapnomnom
+      shell: |
+        go install github.com/lkarlslund/ldapnomnom@latest
+      args:
+        executable: /bin/bash
+
+    - name: Clone RelayKing repository
+      git:
+        repo: https://github.com/depthsecurity/RelayKing-Depth.git
+        dest: '{{ user_home }}/Binaries/RelayKing'
+        update: yes
+
+    - name: Create Python virtual environment
+      command: 'python3 -m venv {{ user_home }}/Binaries/RelayKing/venv'
+      args:
+        creates: '{{ user_home }}/Binaries/RelayKing/venv/bin/activate'
+
+    - name: Install Python requirements inside venv
+      pip:
+        requirements: '{{ user_home }}/Binaries/RelayKing/requirements.txt'
+        virtualenv: '{{ user_home }}/Binaries/RelayKing/venv'
+        virtualenv_python: python3
+
+    - name: Clone Impacket-Partial-Mic repository
+      git:
+        repo: https://github.com/decoder-it/impacket-partial-mic.git
+        dest: '{{ user_home }}/Binaries/Impacket-Partial-Mic'
+        update: yes
+
+    - name: Create Python virtual environment
+      command: 'python3 -m venv {{ user_home }}/Binaries/Impacket-Partial-Mic/venv'
+      args:
+        creates: '{{ user_home }}/Binaries/Impacket-Partial-Mic/venv/bin/activate'
+
+    - name: Install Impacket-Partial-Mic into virtualenv
+      pip:
+        name: '{{ user_home }}/Binaries/Impacket-Partial-Mic'
+        virtualenv: '{{ user_home }}/Binaries/Impacket-Partial-Mic/venv'
+        virtualenv_python: python3
 
     - name: Add custom Zsh configuration
       copy:
@@ -294,6 +336,8 @@
       loop:
         - https://github.com/nicocha30/ligolo-ng/releases/download/v0.8.2/ligolo-ng_proxy_0.8.2_linux_amd64.tar.gz
         - https://github.com/0xb11a1/yetAnotherObfuscator/releases/download/1.1/yetAnotherObfuscator_v1.1.zip
+        - https://raw.githubusercontent.com/decoder-it/printerbugnew/refs/heads/main/printerbugnew.py
+        - https://github.com/ropnop/kerbrute/releases/download/v1.0.3/kerbrute_linux_amd64
 
     - name: Download LFI Wordlists to their folder
       become: yes
@@ -302,8 +346,8 @@
         dest: "/usr/share/wordlists/seclists/Fuzzing/LFI"
         mode: '0755'
       loop:
-        - https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/file_inclusion_linux.txt
-        - https://github.com/carlospolop/Auto_Wordlists/blob/main/wordlists/file_inclusion_windows.txt
+        - https://raw.githubusercontent.com/carlospolop/Auto_Wordlists/refs/heads/main/wordlists/file_inclusion_linux.txt
+        - https://raw.githubusercontent.com/carlospolop/Auto_Wordlists/refs/heads/main/wordlists/file_inclusion_windows.txt
         - https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Linux
         - https://raw.githubusercontent.com/DragonJAR/Security-Wordlist/main/LFI-WordList-Windows
 
@@ -344,7 +388,7 @@
         - https://github.com/jpillora/chisel/releases/download/v1.10.1/chisel_1.10.1_windows_amd64.gz
         - https://github.com/DominicBreuker/pspy/releases/download/v1.2.1/pspy64
         - https://raw.githubusercontent.com/uknowsec/SweetPotato/master/SweetPotato-Webshell-new/bin/Release/SweetPotato.exe
-        - https://github.com/SpecterOps/MSSQLHound/blob/main/MSSQLHound.ps1
+        - https://raw.githubusercontent.com/SpecterOps/MSSQLHound/refs/heads/main/MSSQLHound.ps1
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET2.exe
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET35.exe
         - https://github.com/BeichenDream/GodPotato/releases/download/V1.20/GodPotato-NET4.exe
@@ -359,6 +403,7 @@
         - https://github.com/stealthcopter/deepce/raw/main/deepce.sh
         - https://github.com/diego-treitos/linux-smart-enumeration/releases/latest/download/lse.sh
         - https://raw.githubusercontent.com/jondonas/linux-exploit-suggester-2/refs/heads/master/linux-exploit-suggester-2.pl
+        - https://github.com/ropnop/kerbrute/releases/download/v1.0.3/kerbrute_windows_amd64.exe
 
     - name: Clone Nishang Repo
       ansible.builtin.git:

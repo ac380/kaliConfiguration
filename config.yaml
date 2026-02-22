@@ -413,11 +413,11 @@
         - https://github.com/jakobfriedl/precompiled-binaries/raw/main/LateralMovement/SimpleBackdoorAdmin.dll
         - https://github.com/jakobfriedl/precompiled-binaries/raw/main/LateralMovement/SimpleBackdoorAdmin.exe
 
-    - name: Clone Nishang Repo
+    - name: Clone TargetedKerberoast Repo
       ansible.builtin.git:
         repo: 'https://github.com/ShutdownRepo/targetedKerberoast.git'
         dest: '{{ user_home }}/Binaries/targetedKerberoast'
-        version: 'master'
+        version: 'main'
         update: yes
 
     - name: Clone Targeted Kerberoast
@@ -428,12 +428,12 @@
         update: yes
 
     - name: Clone Statistically Likely Repo
+      become: yes
       ansible.builtin.git:
         repo: 'https://github.com/insidetrust/statistically-likely-usernames.git'
         dest: '/usr/share/wordlists/StatisticallyLikelyUsernames'
         version: 'master'
         update: yes
-        become: yes
 
     - name: Clone Sharp Collection Repo
       ansible.builtin.git:

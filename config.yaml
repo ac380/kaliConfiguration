@@ -89,7 +89,6 @@
           - whatweb
           - wget
           - krbrelayx
-          - dnstool
           - cargo
           - chromium
           - eza
@@ -418,13 +417,6 @@
       ansible.builtin.git:
         repo: 'https://github.com/ShutdownRepo/targetedKerberoast.git'
         dest: '{{ user_home }}/Binaries/targetedKerberoast'
-        version: 'master'
-        update: yes
-
-    - name: Clone Krbrelayx
-      ansible.builtin.git:
-        repo: 'https://github.com/dirkjanm/krbrelayx.git'
-        dest: '{{ user_home }}/Binaries/krbrelayx'
         version: 'master'
         update: yes
 

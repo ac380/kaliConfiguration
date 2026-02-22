@@ -34,7 +34,6 @@ community-strings = '/usr/share/wordlists/seclists/Discovery/SNMP/snmp-onesixtyo
 [dirbuster]
 wordlist = [
  	'/usr/share/seclists/Discovery/Web-Content/quickhits.txt',
- 	'/usr/share/seclists/Discovery/Web-Content/combined_words.txt',
  	'/usr/share/seclists/Discovery/Web-Content/api-endpoints-res.txt',
     '/usr/share/seclists/Discovery/Web-Content/File-Extensions-Universal-SVNDigger-Project/all.txt'
 ]

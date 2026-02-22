@@ -35,3 +35,8 @@ fi
 if [ -d "$HOME/go/bin" ] ; then
     PATH="$HOME/go/bin:$PATH"
 fi
+
+# set PATH so it includes Binaries path
+if [ -d "$HOME/Binaries" ] ; then
+    PATH="$HOME/Binaries:$PATH"
+fi

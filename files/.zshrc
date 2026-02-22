@@ -288,10 +288,25 @@ parsenmap() {
     ver = ""
     for (j = start; j <= NF; j++)
       ver = ver (ver ? " " : "") $j
+
+    # Strip syn-ack ttl fingerprint noise
+    gsub(/syn-ack ttl [0-9]+/, "", ver)
+    gsub(/^ +| +$/, "", ver)
     if (ver == "") ver = "-"
 
-    svc_uc = toupper(svc)
-    printf "## TCP/%s %s %s\n", portnum, svc_uc, ver
+    # Normalize service and version labels
+    if (tolower(svc) == "microsoft-ds?") {
+        svc = "SMB"
+    } else {
+        svc = toupper(svc)
+    }
+
+    if (ver ~ /Microsoft HTTPAPI httpd 2\.0 \(SSDP\/UPnP\)/) {
+        svc = "WinRM"
+        ver = "-"
+    }
+
+    printf "## TCP/%s %s %s\n", portnum, svc, ver
   }
   ' "$file" | tee /dev/stderr | xsel --clipboard
 }

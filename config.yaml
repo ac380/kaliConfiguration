@@ -407,13 +407,41 @@
         - https://raw.githubusercontent.com/fashionproof/EnableAllTokenPrivs/refs/heads/master/EnableAllTokenPrivs.ps1
         - https://github.com/AlessandroZ/LaZagne/releases/download/v2.4.7/LaZagne.exe
         - https://raw.githubusercontent.com/Arvanaghi/SessionGopher/refs/heads/master/SessionGopher.ps1
+        - https://github.com/djhohnstein/SharpWeb/releases/download/v1.2/SharpWeb.exe
+        - https://github.com/jakobfriedl/precompiled-binaries/raw/main/Enumeration/Seatbelt.exe
+        - https://github.com/jakobfriedl/precompiled-binaries/raw/main/PrivilegeEscalation/KrbRelayUp.exe
+        - https://github.com/jakobfriedl/precompiled-binaries/raw/main/PrivilegeEscalation/KrbRelay/KrbRelay.exe
+        - https://github.com/jakobfriedl/precompiled-binaries/raw/main/LateralMovement/SimpleBackdoorAdmin.dll
+        - https://github.com/jakobfriedl/precompiled-binaries/raw/main/LateralMovement/SimpleBackdoorAdmin.exe
 
     - name: Clone Nishang Repo
+      ansible.builtin.git:
+        repo: 'https://github.com/ShutdownRepo/targetedKerberoast.git'
+        dest: '{{ user_home }}/Binaries/targetedKerberoast'
+        version: 'master'
+        update: yes
+
+    - name: Clone Krbrelayx
+      ansible.builtin.git:
+        repo: 'https://github.com/dirkjanm/krbrelayx.git'
+        dest: '{{ user_home }}/Binaries/krbrelayx'
+        version: 'master'
+        update: yes
+
+    - name: Clone Targeted Kerberoast
       ansible.builtin.git:
         repo: 'https://github.com/samratashok/nishang.git'
         dest: '{{ user_home }}/Staging/Nishang'
         version: 'master'
         update: yes
+
+    - name: Clone Statistically Likely Repo
+      ansible.builtin.git:
+        repo: 'https://github.com/insidetrust/statistically-likely-usernames.git'
+        dest: '/usr/share/wordlists/StatisticallyLikelyUsernames'
+        version: 'master'
+        update: yes
+        become: yes
 
     - name: Clone Sharp Collection Repo
       ansible.builtin.git:

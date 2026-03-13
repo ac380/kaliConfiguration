@@ -339,6 +339,7 @@ Prefix: Ctrl + Space
 - Ctrl + s       : If in copy mode, searches forwards (next match)
 - Space + Arrow  : If in copy mode, selects everywhere.
 - Ctrl + Arrow   : If in copy mode, moves and scrolls
+- F7             : Toggle rectangle selection in copy mode
 "'
 
 alias fzfshortcuts='echo "
